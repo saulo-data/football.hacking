@@ -21,7 +21,7 @@ xt_array = np.array(xt_metrics)
 
 # mongodb connection
 conn = MongoClient(st.secrets['url_con'])
-db = conn.whoscored_data
+db = conn.football_data
 col_calendar = db.whoscored_calendar
 col_matches = db.whoscored_matches
 
