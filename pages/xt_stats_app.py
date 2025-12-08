@@ -20,7 +20,7 @@ with open('static/xt_metrics.json', 'r') as f:
 xt_array = np.array(xt_metrics)
 
 # mongodb connection
-conn = MongoClient(st.secrets['url_con_local'])
+conn = MongoClient(st.secrets['url_con'])
 db = conn.whoscored_data
 col_calendar = db.whoscored_calendar
 col_matches = db.whoscored_matches
