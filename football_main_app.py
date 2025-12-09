@@ -17,7 +17,7 @@ if not st.user.is_logged_in:
     ], position='top')
 
     pg_1.run()
-    if st.button("Log in with Google", width=250):
+    if st.button("Log in with Google", width=250, type='primary'):
         st.login()
 else:
     emails = col_users.distinct('email')
@@ -47,7 +47,7 @@ else:
 
     pg_2.run()
     
-    if st.button("Log out"):
+    if st.button("Log out", width=250, type='primary'):
         st.logout()
     st.write(f"Hello, {user['name']}!")
 
