@@ -64,6 +64,7 @@ with st.sidebar:
 
     st.subheader("Useful Links (PT-BR)")
     st.link_button('Website', 'https://www.footballhacking.com', width='stretch')
+    st.link_button('E-Book MplSoccer | Free', 'subscribepage.io/mplsoccer', width='stretch')
     st.link_button("Instagram", "https://www.instagram.com/football.hacking/", width='stretch')
     st.link_button("X", "https://x.com/footballhacking", use_container_width=True)
     st.link_button('YouTube', 'https://www.youtube.com/channel/UCkSw2eyetrr8TByFis0Uyug', width='stretch')
