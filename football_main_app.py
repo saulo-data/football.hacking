@@ -49,6 +49,7 @@ else:
     else:
         user['number_of_access'] = 1
         user['last_seen_on'] = datetime.now()
+        user['on_mailing_list'] = False
         col_users.insert_one(user)
 
     pg_2.run()
