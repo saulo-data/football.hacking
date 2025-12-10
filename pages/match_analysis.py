@@ -1,14 +1,10 @@
 #libraries
 import streamlit as st
 import pandas as pd
-from pymongo import MongoClient, collection
+from football_main_app import col_fotmob
 import plotly.express as px
 
-#connection
-conn = st.secrets['url_con']
-client = MongoClient(conn)
-db = client.football_data
-col = db.fotmob_stats
+col = col_fotmob
 
 #list of the teams
 cups = ['INT', 'INT-2']
