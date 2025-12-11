@@ -12,7 +12,7 @@ col_fotmob = db.fotmob_stats
 col_whoscored_calendar = db.whoscored_calendar
 col_whoscored_matches = db.whoscored_matches
 
-st.set_page_config(page_icon='static/image.png')
+st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
 
 if not st.user.is_logged_in:
     st.text("""Please log in to access the full functionality of the platform. Logging in ensures a personalized experience and allows you to use all available features and analytical tools.""")
