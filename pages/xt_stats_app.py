@@ -391,7 +391,7 @@ home_names = get_names(venue='home')
 away_names = get_names(venue='away')
 
 # form
-with st.form('my-form'):
+with st.form('my-form', key='xt_app'):
     if 'home' not in st.session_state:
         st.session_state['home'] = home_names[0]
     
