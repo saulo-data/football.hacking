@@ -224,7 +224,7 @@ def plot_most_danger_passes(data_home: pd.DataFrame, data_away: pd.DataFrame, ho
     home_df = data_home.sort_values('end_zone_xt', ascending=False).head(limit)
     away_df = data_away.sort_values('end_zone_xt', ascending=False).head(limit)
 
-    pitch = Pitch(pitch_type='opta',  line_zorder=0, line_color='#c7d5cc', pitch_color='#22312b')
+    pitch = Pitch(pitch_type='opta',  line_zorder=3, line_color='#c7d5cc', pitch_color='#22312b')
     fig, ax = pitch.draw(nrows=1, ncols=2, figsize=(10, 5), tight_layout=True)
     fig.patch.set_facecolor(background)
 
@@ -304,7 +304,7 @@ def plot_passes_by_player(data: pd.DataFrame, players: list, home_team: str, awa
     player_from = data[data['player'] == st.session_state['player_passes']]
     player_to = data[data['recipient'] == st.session_state['player_passes']]
 
-    pitch = Pitch(pitch_type='opta',  line_zorder=0, line_color='#c7d5cc', pitch_color='#22312b')
+    pitch = Pitch(pitch_type='opta',  line_zorder=3, line_color='#c7d5cc', pitch_color='#22312b')
     fig, ax = pitch.draw(nrows=1, ncols=2, figsize=(10, 5), tight_layout=True)
     ax[0].set_title(f"From {st.session_state['player_passes']}", fontweight='bold')
     ax[1].set_title(f"To {st.session_state['player_passes']}", fontweight='bold')
