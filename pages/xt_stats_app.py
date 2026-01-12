@@ -140,6 +140,7 @@ def plot_graphs(graph_home: nx.DiGraph, graph_away: nx.DiGraph, home_color: str,
         fig.patch.set_facecolor(background)
 
         st.subheader('Players Interactions')
+        st.text('This chart shows the interactions between players within the selected timestamp')
         st.pyplot(fig)
     except Exception:
         st.text('There is not enough data available.')
