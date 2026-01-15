@@ -17,12 +17,12 @@ st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png
 if not st.user.is_logged_in:
     st.text("""Please log in to access the full functionality of the platform. Logging in ensures a personalized experience and allows you to use all available features and analytical tools.""")
     
-    # pg_1 = st.navigation([
-    #     st.Page('pages/home.py', title='Home'),
-    #     st.Page('pages/about.py', title='About Me')
-    # ], position='top')
+    pg_1 = st.navigation([
+        st.Page('pages/home.py', title='Home'),
+        st.Page('pages/about.py', title='About Me')
+    ], position='top')
 
-    # pg_1.run()
+    pg_1.run()
     if st.button("Log in with Google", width=250, type='primary'):
         st.login()
 else:
