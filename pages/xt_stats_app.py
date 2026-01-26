@@ -44,7 +44,7 @@ def get_passes_df(match_id: int, xt_array: np.array) -> pd.DataFrame:
     corrections = {'Man City': 'Manchester City', 'Man Utd': 'Manchester United', 'Mainz': 'Mainz 05', 
     'Leverkusen': 'Bayer Leverkusen', 'Stuttgart': 'VfB Stuttgart', 'RBL': 'RB Leipzig', 'Bayern': 'Bayern Munich', 
     'Hamburg': 'Hamburger SV', 'Atletico': 'Atletico Madrid', 'Porto': 'FC Porto', 'Sporting': 'Sporting CP', 
-    'PSG': 'Paris Saint-Germain', 'Seattle': 'Seattle Sounders FC', 'Vancouver': 'Vancouver Whitecaps'}
+    'PSG': 'Paris Saint-Germain', 'Schalke 04': 'Schalke'}
 
     calendar = list(col_calendar.find({'game_id': match_id}, {'_id': 0, 'home_team': 1, 'away_team': 1}))[0]
     home_team = calendar['home_team']
