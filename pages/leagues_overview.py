@@ -20,8 +20,8 @@ text = '#073d05'
 
 
 #filtering data
-YEAR = 2025
-SEASONS = [f"{YEAR}", f"{YEAR}/{YEAR+1}"]
+YEAR = 2026
+SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 INT = ['INT, INT-2']
 
 teams = list(collection.find({'general.league': {"$nin": INT}, 'general.season': {"$in": SEASONS}}).distinct('teams.home.name'))
