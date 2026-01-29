@@ -25,7 +25,7 @@ col_matches = col_whoscored_matches
 # function to get teams names
 @st.cache_data(ttl='12h', show_spinner=False)
 def get_names(venue: str) -> list[str]:
-    teams = col_calendar.find({'season': {'$in': [2025, 2526]}}).distinct(f'{venue}_team')
+    teams = col_calendar.find({'season': {'$in': [2026, 2526]}}).distinct(f'{venue}_team')
     
     return teams
 
