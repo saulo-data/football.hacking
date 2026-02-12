@@ -152,6 +152,7 @@ def get_centralities_df(data: pd.DataFrame, home_team: str, away_team: str) -> p
     G_home, G_away = make_graphs(data, home_team, away_team)
 
     home_centralities = pd.DataFrame({
+        'team': home_team,
         'player': nx.load_centrality(G_home).keys(), 
         'load centrality': nx.load_centrality(G_home).values(),
         'closeness centrality': nx.closeness_centrality(G_home).values(),
@@ -160,6 +161,7 @@ def get_centralities_df(data: pd.DataFrame, home_team: str, away_team: str) -> p
     })
 
     away_centralities = pd.DataFrame({
+        'team': away_team,
         'player': nx.load_centrality(G_away).keys(), 
         'load centrality': nx.load_centrality(G_away).values(),
         'closeness centrality': nx.closeness_centrality(G_away).values(),
