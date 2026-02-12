@@ -203,7 +203,8 @@ try:
     
     squads = list(df['Squad'])    
     
-    
+
+def input_form():
     with st.form(key="true_perf"):                 
         if 'home_team' not in st.session_state:
             st.session_state['home_team'] = squads[0]
@@ -217,65 +218,68 @@ try:
                 
         
         submitted = st.form_submit_button("Submit")
+    
+
+submitted = input_form()
         
-        if submitted:
-            st.session_state['home_team'] = home
-            st.session_state['away_team'] = away            
-            params = list(df.columns[1:])
-            low = []
-            high = []
+if submitted:
+    st.session_state['home_team'] = home
+    st.session_state['away_team'] = away            
+    params = list(df.columns[1:])
+    low = []
+    high = []
             
-            for param in params:
-                low.append(df[param].min() * 0.5)
-                high.append(df[param].max() * 1.1)
+    for param in params:
+        low.append(df[param].min() * 0.5)
+        high.append(df[param].max() * 1.1)
             
-            lower_is_better = ['Goals Conceded Avg']
+        lower_is_better = ['Goals Conceded Avg']
             
-            radar = Radar(params, low, high,
-                              lower_is_better=lower_is_better,
-                              round_int=[False] * len(params),
-                              num_rings=4,
-                              ring_width=1, center_circle_radius=1)
+        radar = Radar(params, low, high,
+                        lower_is_better=lower_is_better,
+                        round_int=[False] * len(params),
+                        num_rings=4,
+                        ring_width=1, center_circle_radius=1)
             
-            values_1 = df[df['Squad'] == st.session_state['home_team']].select_dtypes(include=np.number).values.flatten().tolist()
-            values_2 = df[df['Squad'] == st.session_state['away_team']].select_dtypes(include=np.number).values.flatten().tolist()
+        values_1 = df[df['Squad'] == st.session_state['home_team']].select_dtypes(include=np.number).values.flatten().tolist()
+        values_2 = df[df['Squad'] == st.session_state['away_team']].select_dtypes(include=np.number).values.flatten().tolist()
             
             
-            home_total_avg = sum(values_1[-2:])
-            away_total_avg = sum(values_2[-2:])
+        home_total_avg = sum(values_1[-2:])
+        away_total_avg = sum(values_2[-2:])
             
-            total_avg = np.round((home_total_avg + away_total_avg) / 2, 2)
+        total_avg = np.round((home_total_avg + away_total_avg) / 2, 2)
             
-            fig, ax = radar.setup_axis()  # format axis as a radar
-            rings_inner = radar.draw_circles(ax=ax, facecolor='#eaeded', edgecolor='#a6a4a1')  # draw circles
-            radar_output = radar.draw_radar_compare(values_1, values_2, ax=ax,
+        fig, ax = radar.setup_axis()  # format axis as a radar
+        rings_inner = radar.draw_circles(ax=ax, facecolor='#eaeded', edgecolor='#a6a4a1')  # draw circles
+        radar_output = radar.draw_radar_compare(values_1, values_2, ax=ax,
                                                         kwargs_radar={'facecolor': '#104DB0', 'alpha': 0.4},
                                                         kwargs_compare={'facecolor': '#B02D10', 'alpha': 0.4})
-            radar_poly, radar_poly2, vertices1, vertices2 = radar_output
+        radar_poly, radar_poly2, vertices1, vertices2 = radar_output
             
-            ax.scatter(vertices1[:, 0], vertices1[:, 1],
+        ax.scatter(vertices1[:, 0], vertices1[:, 1],
                        c='#104DB0', edgecolors='k', marker='o', s=110, zorder=2, alpha=0.5)
-            ax.scatter(vertices2[:, 0], vertices2[:, 1],
-                       c='#B02D10', edgecolors='k', marker='o', s=110, zorder=2, alpha=0.5)
+        ax.scatter(vertices2[:, 0], vertices2[:, 1],
+                    c='#B02D10', edgecolors='k', marker='o', s=110, zorder=2, alpha=0.5)
             
-            range_labels = radar.draw_range_labels(ax=ax, fontsize=13, fontproperties=robotto_bold.prop)  # draw the range labels
-            param_labels = radar.draw_param_labels(ax=ax, fontsize=18, fontproperties=robotto_bold.prop)
-            lines = radar.spoke(ax=ax, color='#a6a4a1', linestyle='--', zorder=2, alpha=0.3)
+        range_labels = radar.draw_range_labels(ax=ax, fontsize=13, fontproperties=robotto_bold.prop)  # draw the range labels
+        param_labels = radar.draw_param_labels(ax=ax, fontsize=18, fontproperties=robotto_bold.prop)
+        lines = radar.spoke(ax=ax, color='#a6a4a1', linestyle='--', zorder=2, alpha=0.3)
             
-            col1, col2, col3 = st.columns(3, gap='medium', border=True)
+        col1, col2, col3 = st.columns(3, gap='medium', border=True)
             
-            with col1:
-                st.markdown(f'<span style="font-size: 24px; color: #104DB0; font-weight: bold;">{home}</span>', unsafe_allow_html=True)
+        with col1:
+            st.markdown(f'<span style="font-size: 24px; color: #104DB0; font-weight: bold;">{home}</span>', unsafe_allow_html=True)
             
-            with col2:
-                st.metric(label="Goals Avg", value=total_avg)
+        with col2:
+            st.metric(label="Goals Avg", value=total_avg)
             
-            with col3:
-                st.markdown(f'<span style="font-size: 24px; color: #B02D10; font-weight:bold;">{away}</span>', unsafe_allow_html=True)
+        with col3:
+            st.markdown(f'<span style="font-size: 24px; color: #B02D10; font-weight:bold;">{away}</span>', unsafe_allow_html=True)
                 
                 
-            st.pyplot(fig)
-            st.caption("*Goals Conceded Avg is showed in a lower-is-better mode. i.e: the larger is the area, "
+        st.pyplot(fig)
+        st.caption("*Goals Conceded Avg is showed in a lower-is-better mode. i.e: the larger is the area, "
                        "the lower is the average of goals conceded.")
 except Exception:
     st.title(
