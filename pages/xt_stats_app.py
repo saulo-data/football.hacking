@@ -439,7 +439,7 @@ if submitted:
 try:
     tab1, tab2 = st.tabs(['Passes', 'Centralities'])
     with tab1:
-        st.dataframe(passes_df)
+        st.dataframe(passes_df.sort_values(by='minute'))
     with tab2:
         st.dataframe(centralities_df)
     
