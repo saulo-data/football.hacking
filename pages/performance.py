@@ -10,8 +10,8 @@ import streamlit as st
 col = col_fotmob
 
 cups = ['INT', 'INT-2']
-YEAR = 2025
-SEASONS = [f"{YEAR}", f"{YEAR}/{YEAR+1}"]
+YEAR = 2026
+SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 
 #get data from mongodb database
 @st.cache_data(show_spinner=False)
