@@ -169,7 +169,7 @@ def get_centralities_df(data: pd.DataFrame, home_team: str, away_team: str) -> p
         'pagerank': nx.pagerank(G_away).values()
     })
 
-    centralities = pd.concat([home_centralities, away_centralities]).sort_values(by='player')
+    centralities = pd.concat([home_centralities, away_centralities], ignore_index=True).sort_values(by='player')
     
     return centralities
 
