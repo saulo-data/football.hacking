@@ -132,7 +132,8 @@ if submitted:
             with col3:
                 st.image(f"{match['teams']['away']['image']}", use_container_width=True)
 
-            st.dataframe(df_shots, hide_index=True)
+            columns_shown = ['min', 'team', 'player', 'type', 'situation', 'outcome', 'xg', 'xgot', 'efficiency_rate']
+            st.dataframe(df_shots[columns_shown].sort_values(by='min'), hide_index=True)
 
             fig = px.scatter(data_frame=df_shots, x='min', y='xg', color='team', color_discrete_sequence=[color_home, color_away], size='size', symbol='outcome', 
                                     hover_name='team', hover_data={'xgot': True, 'team': False, 'player': True, 'type': True, 'situation': True, 'outcome': True, 'size': False},  
