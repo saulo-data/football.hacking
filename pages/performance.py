@@ -126,7 +126,7 @@ def get_dataframe(squad_stats: list, team:str, seasons: list) -> pd.DataFrame:
     }) 
 
     df['Overall Diff %'] = df.iloc[:, 4:].mean(axis=1)
-    df['Weighted Avg Diff %'] = np.average([df['Ball Poss Diff %']), (df['Pass Opp Half Diff %']), (df['Open-Play xG per 100 Passes Diff %']), (df['Touch Opp Box 100 Passes Diff %']], 
+    df['Weighted Avg Diff %'] = np.average([df['Ball Poss Diff %'], df['Pass Opp Half Diff %'], df['Open-Play xG per 100 Passes Diff %'], df['Touch Opp Box 100 Passes Diff %']], 
                                                                                                                                                  weights=[0.12, 0.25,  0.4,  0.32])
     df['Standard Dev'] = df.iloc[:, 4:8].std(axis=1)
      
