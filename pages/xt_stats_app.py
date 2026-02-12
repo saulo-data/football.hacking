@@ -437,7 +437,11 @@ if submitted:
         st.text('Something is not right! Maybe this match hasn’t occurred yet.')
 
 try:
-    st.dataframe(centralities_df)
+    tab1, tab2 = st.tabs('Passes', 'Centralities'[])
+    with tab1:
+        st.dataframe(passes_df)
+    with tab2:
+        st.dataframe(centralities_df)
     
     col3, col4 = st.columns([6.1, 3.9])
     
