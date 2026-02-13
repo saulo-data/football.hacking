@@ -92,7 +92,8 @@ def venue_goals_avg(df: pd.DataFrame, column_home: str, column_away: str) -> tup
     away_goals_avg = df[column_away].mean()
 
     return home_goals_avg, away_goals_avg
-
+    
+@st.fragment
 def get_goals_metrics(df_league: pd.DataFrame, column_team_home: str, home_team: str, column_home_scores: str, columns_team_away: str, away_team: str, columns_away_scores: str, total_home_avg: float, total_away_avg: float) -> tuple[float]:
     home_scored_avg = df_league[df_league[column_team_home] == home_team][column_home_scores].mean()
     away_scored_avg = df_league[df_league[columns_team_away] == away_team][columns_away_scores].mean()
