@@ -36,6 +36,7 @@ else:
     
     pg_2 = st.navigation([
         st.Page('pages/home.py', title='Home'),
+        st.Page('pages/poisson_preds.py', title='Poisson Preds'),
         st.Page('pages/leagues_overview.py', title='League Overview'), 
         st.Page('pages/match_analysis.py', title='Match xG Stats'), 
         st.Page('pages/performance.py', title='Relative Performance'), 
