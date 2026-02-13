@@ -94,7 +94,7 @@ def venue_goals_avg(df: pd.DataFrame, column_home: str, column_away: str) -> tup
     return home_goals_avg, away_goals_avg
     
 @st.fragment
-def get_goals_metrics(df_league: pd.DataFrame, column_team_home: str, home_team: str, column_home_scores: str, columns_team_away: str, away_team: str, columns_away_scores: str, total_home_avg: float, total_away_avg: float) -> None:
+def get_goals_metrics(df_league: pd.DataFrame, column_team_home: str, home_team: str, column_home_scores: str, columns_team_away: str, away_team: str, columns_away_scores: str, total_home_avg: float, total_away_avg: float) -> tuple[float]:
     home_scored_avg = df_league[df_league[column_team_home] == home_team][column_home_scores].mean()
     away_scored_avg = df_league[df_league[columns_team_away] == away_team][columns_away_scores].mean()
     
@@ -110,42 +110,8 @@ def get_goals_metrics(df_league: pd.DataFrame, column_team_home: str, home_team:
 
     home_goals = home_of_cap * away_def_cap * total_home_avg
     away_goals = away_of_cap * home_def_cap * total_away_avg
-    goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
 
-    match_probs = get_match_probs(goal_matrix=goal_matrix)
-    btts = get_btts_probs(goal_matrix=goal_matrix)
-    goal_probs = get_unders_overs(home_goals=home_goals, away_goals=away_goals)
-
-    goals_table = matrix_to_df(goal_matrix=goal_matrix, home_team=home, away_team=away)
-    match_odds_df = probs_to_df(match_probs)
-    btts_df = probs_to_df(btts)
-    goal_df = probs_to_df(goal_probs)
-
-    st.header('Poisson Heatmap and Weighted Perfomances Home/Away')
-    st.text('Weighted Performances are based on metrics such as Open-Play xG Per 100 Passes and so on.')
-
-    col1, col2 = st.columns([9, 4])
-
-    with col1:
-        plot_poisson_heatmap(df=goals_table, home_team=home, away_team=away)
-    with col2:
-        plot_venue_performances(df=df_league, home_team=home, away_team=away)
-
-    st.divider()
-
-    st.header('Probabilities and Odds')
-    st.text('Odds between 1.70 and 2.00 stand out because, historically, they have delivered the highest ROI in the long run. But the decision is up to you.')
-    col3, col4 = st.columns([10, 3])
-
-    with col3:
-        st.subheader('Result Probabilities')
-        st.dataframe(style_df(match_odds_df))
-    with col4:
-        st.subheader('BTTS Probabilities')
-        st.dataframe(style_df(btts_df))
-
-    st.subheader('Overs and Unders Probabilities')
-    st.dataframe(style_df(goal_df))
+    return home_goals, away_goals
     
 
 def get_matrix_poisson(home_goals: float, away_goals: float, max_goals: int) -> np.outer:
@@ -351,7 +317,42 @@ submitted, home, away = input_form(home_teams=home_teams, away_teams=away_teams)
 
 if submitted: 
     total_home_avg, total_away_avg = venue_goals_avg(df=df_league, column_home='score_home', column_away='score_away')
-    get_goals_metrics(df_league=df_league, column_team_home='home', home_team=home, column_home_scores='score_home', columns_team_away='away', away_team=away, columns_away_scores='score_away', 
+    home_goals, away_goals = get_goals_metrics(df_league=df_league, column_team_home='home', home_team=home, column_home_scores='score_home', columns_team_away='away', away_team=away, columns_away_scores='score_away', 
                                            total_home_avg=total_home_avg, total_away_avg=total_away_avg)
-    
+    goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
+
+    match_probs = get_match_probs(goal_matrix=goal_matrix)
+    btts = get_btts_probs(goal_matrix=goal_matrix)
+    goal_probs = get_unders_overs(home_goals=home_goals, away_goals=away_goals)
+
+    goals_table = matrix_to_df(goal_matrix=goal_matrix, home_team=home, away_team=away)
+    match_odds_df = probs_to_df(match_probs)
+    btts_df = probs_to_df(btts)
+    goal_df = probs_to_df(goal_probs)
+
+    st.header('Poisson Heatmap and Weighted Perfomances Home/Away')
+    st.text('Weighted Performances are based on metrics such as Open-Play xG Per 100 Passes and so on.')
+
+    col1, col2 = st.columns([9, 4])
+
+    with col1:
+        plot_poisson_heatmap(df=goals_table, home_team=home, away_team=away)
+    with col2:
+        plot_venue_performances(df=df_league, home_team=home, away_team=away)
+
+    st.divider()
+
+    st.header('Probabilities and Odds')
+    st.text('Odds between 1.70 and 2.00 stand out because, historically, they have delivered the highest ROI in the long run. But the decision is up to you.')
+    col3, col4 = st.columns([10, 3])
+
+    with col3:
+        st.subheader('Result Probabilities')
+        st.dataframe(style_df(match_odds_df))
+    with col4:
+        st.subheader('BTTS Probabilities')
+        st.dataframe(style_df(btts_df))
+
+    st.subheader('Overs and Unders Probabilities')
+    st.dataframe(style_df(goal_df))
     
