@@ -273,7 +273,7 @@ def style_df(df: pd.DataFrame) -> pd.DataFrame:
 def plot_poisson_heatmap(df: pd.DataFrame, home_team: str, away_team: str) -> None:
     fig, ax = plt.subplots(figsize=(20, 5))
 
-    ax.set_title('Poisson Probabilities')
+    ax.set_title('Poisson Probabilities', fontweight='bold')
     ax.set_xlabel(away_team)
     ax.set_ylabel(home_team)
     
@@ -288,7 +288,7 @@ def plot_venue_performances(df: pd.DataFrame, home_team: str, away_team: str) ->
     df_away = df[df['away'] == away_team]
 
     fig,ax = plt.subplots(figsize=(8, 5))
-    ax.set_title('Weightd performance Home/Away')
+    ax.set_title('Weightd performance Home/Away', fontweight='bold')
     ax.set_xlabel(' ')
     ax.set_ylabel('Weighted Performance')
     sns.barplot(data=df_home, x='home', y='weighted_performance_home', ax=ax)
