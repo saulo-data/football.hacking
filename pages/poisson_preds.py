@@ -5,6 +5,7 @@ import plotly.express as px
 from football_main_app import db
 from scipy.stats import poisson
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 
 st.set_page_config(
@@ -272,14 +273,19 @@ def style_df(df: pd.DataFrame) -> pd.DataFrame:
 
     return styled_df
 
-def plot_poisson_heatmap(df: pd.DataFrame, home_team: str, away_team: str) -> None:
+def create_colormap(colors: list) -> LinearSegmentedColormap: 
+    custom_camp = LinearSegmentedColormap.from_list('my_colormap', colors=colors, N=256)
+
+    return custom_camp
+
+def plot_poisson_heatmap(df: pd.DataFrame, home_team: str, away_team: str, cmap: LinearSegmentedColormap) -> None:
     fig, ax = plt.subplots(figsize=(20, 5))
 
     ax.set_title('Poisson Probabilities', fontweight='bold')
     ax.set_xlabel(away_team)
     ax.set_ylabel(home_team)
     
-    sns.heatmap(goals_table, annot=True, fmt=".2f", cmap='RdYlGn', linewidths=2, linecolor='k', ax=ax);
+    sns.heatmap(goals_table, annot=True, fmt=".2f", cmap=cmap, linewidths=2, linecolor='k', ax=ax);
     ax.invert_yaxis()
     fig.set_facecolor("#e3f5ea")
 
@@ -293,8 +299,8 @@ def plot_venue_performances(df: pd.DataFrame, home_team: str, away_team: str) ->
     ax.set_title('Weighted Performance Home/Away', fontweight='bold')
     ax.set_xlabel(' ')
     ax.set_ylabel('Weighted Performance')
-    sns.barplot(data=df_home, x='home', y='weighted_performance_home', ax=ax)
-    sns.barplot(data=df_away, x='away', y='weighted_performance_away', ax=ax)
+    sns.barplot(data=df_home, x='home', y='weighted_performance_home', ax=ax, color='#5B5EF0')
+    sns.barplot(data=df_away, x='away', y='weighted_performance_away', ax=ax, color='#E34255')
     sns.despine()
     ax.set_facecolor("#e3f5ea")
     fig.set_facecolor("#e3f5ea")
@@ -330,13 +336,15 @@ if submitted:
     btts_df = probs_to_df(btts)
     goal_df = probs_to_df(goal_probs)
 
+    custom_cmap = create_colormap(colors=["#2F3B2F", "#15E615"])
+
     st.header('Poisson Heatmap and Weighted Perfomances Home/Away')
     st.text('Weighted Performances are based on metrics such as Open-Play xG Per 100 Passes and so on.')
 
     col1, col2 = st.columns([9, 4])
 
     with col1:
-        plot_poisson_heatmap(df=goals_table, home_team=home, away_team=away)
+        plot_poisson_heatmap(df=goals_table, home_team=home, away_team=away, cmap=custom_cmap)
     with col2:
         plot_venue_performances(df=df_league, home_team=home, away_team=away)
 
