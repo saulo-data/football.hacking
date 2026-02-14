@@ -281,7 +281,7 @@ def create_colormap(colors: list) -> LinearSegmentedColormap:
 def plot_poisson_heatmap(df: pd.DataFrame, home_team: str, away_team: str, cmap: LinearSegmentedColormap) -> None:
     fig, ax = plt.subplots(figsize=(20, 5))
 
-    ax.set_title('Poisson Probabilities', fontweight='bold')
+    ax.set_title('Poisson Probabilities %', fontweight='bold')
     ax.set_xlabel(away_team)
     ax.set_ylabel(home_team)
     
