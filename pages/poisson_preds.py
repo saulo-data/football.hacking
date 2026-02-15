@@ -183,10 +183,6 @@ def get_match_probs(goal_matrix: np.outer) -> dict:
                 "Prob": home_handicap_0, 
                 "Odd": np.round(100  / home_handicap_0, 2)
             }, 
-             "Draw": {
-                "Prob": 0, 
-                "Odd": 0
-            },
             "Away": {
                 "Prob": away_handicap_0, 
                 "Odd": np.round(100  / away_handicap_0, 2)
