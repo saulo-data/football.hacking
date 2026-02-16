@@ -88,6 +88,16 @@ def get_total_goals_avg(df: pd.DataFrame, column: str) -> float:
 
     return total_goals_avg
 
+def get_rho(goals_avg: float) -> float:
+    if goals_avg >= 3.0:
+        rho = -0.02
+    elif goals_avg <= 2.6:
+        rho = -0.1
+    else:
+        rho = -0.05
+
+    return rho
+
 def venue_goals_avg(df: pd.DataFrame, column_home: str, column_away: str) -> tuple[float]:
     home_goals_avg = df[column_home].mean()
     away_goals_avg = df[column_away].mean()
@@ -122,6 +132,41 @@ def get_matrix_poisson(home_goals: float, away_goals: float, max_goals: int) -> 
     goal_matrix = np.outer(home_probs, away_probs) 
 
     return goal_matrix
+
+##### correction low scores
+def dc_tau(i, j, lam_home, lam_away, rho):
+    # Fator tau do Dixon-Coles
+    if i == 0 and j == 0:
+        return 1 - (lam_home * lam_away * rho)
+    if i == 1 and j == 0:
+        return 1 + (lam_away * rho)
+    if i == 0 and j == 1:
+        return 1 + (lam_home * rho)
+    if i == 1 and j == 1:
+        return 1 - rho
+    return 1.0
+
+def apply_dixon_coles_to_matrix(P, lam_home, lam_away, rho: float, normalize=True):
+    """
+    P: matriz Poisson já pronta (probabilidades joint de placar)
+    lam_home, lam_away: lambdas originais usados/compatíveis com P
+    rho: parâmetro Dixon-Coles
+    """
+    P_dc = P.astype(float).copy()
+
+    # aplica só nos placares baixos
+    for i in (0, 1):
+        for j in (0, 1):
+            if i < P_dc.shape[0] and j < P_dc.shape[1]:
+                P_dc[i, j] *= dc_tau(i, j, lam_home, lam_away, rho)
+
+    if normalize:
+        s = P_dc.sum()
+        if s <= 0:
+            raise ValueError("Soma da matriz após ajuste ficou <= 0. Verifique rho/lambdas.")
+        P_dc /= s
+
+    return P_dc
 
 def matrix_to_df(goal_matrix: np.outer, home_team: str, away_team: str) -> pd.DataFrame: 
     max_goals = goal_matrix.shape[0]
@@ -308,7 +353,11 @@ if submitted:
     total_home_avg, total_away_avg = venue_goals_avg(df=df_league, column_home='score_home', column_away='score_away')
     home_goals, away_goals = get_goals_metrics(df_league=df_league, column_team_home='home', home_team=home, column_home_scores='score_home', columns_team_away='away', away_team=away, columns_away_scores='score_away', 
                                            total_home_avg=total_home_avg, total_away_avg=total_away_avg)
+    
+    total_goals_avg = get_total_goals_avg(df=df_league, column='goals_sum')
+    rho = get_rho(goals_avg=total_goals_avg)
     goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
+    goal_matrix = apply_dixon_coles_to_matrix(P=goal_matrix, lam_home=home_goals, lam_away=away_goals, rho=rho)
 
     match_probs = get_match_probs(goal_matrix=goal_matrix)
     btts = get_btts_probs(goal_matrix=goal_matrix)
