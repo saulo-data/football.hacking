@@ -2,9 +2,9 @@
 
 # 🎯 Football Hacking — Football Analysis App
 
-**Football Hacking** is a modern football (soccer) analytics web application built with **Streamlit** and **Python**, designed to turn raw data into meaningful tactical insights and performance analysis. The goal of this project is to empower analysts, coaches, and football enthusiasts with data-driven tools to better understand matches, league trends, tactical performance, and more — all in a user-friendly interface.
+'**Football Hacking** is a modern football (soccer) analytics web application built with **Streamlit** and **Python**, designed to turn raw data into meaningful tactical insights and performance analysis. The goal of this project is to empower analysts, coaches, and football enthusiasts with data-driven tools to better understand matches, league trends, tactical performance, and more — all in a user-friendly interface.
 
-This app includes dashboards that leverage match data from multiple sources (e.g., FotMob, WhoScored) stored in MongoDB, and provides interactive navigation between analysis pages such as expected goals (xG) predictions, league overviews, match analysis, relative performance metrics, pass metrics (xT), player stats, and more.
+This app includes dashboards that leverage match data from multiple sources (e.g., FotMob, WhoScored) stored in MongoDB, and provides interactive navigation between analysis pages such as expected goals (xG) predictions, league overviews, match analysis, relative performance metrics, pass metrics (xT), player stats, and more.'
 
 ---
 
@@ -127,12 +127,6 @@ If you have questions or want to share your feedback:
 📘 Free E-Books (analytics & betting): linked in the app
 
 Follow the community on social media and YouTube via the sidebar links built into the app.
-
----
-
-## 🪪 License
-
-Include your project license here (if applicable). This section is currently a placeholder.
 
 ---
 
