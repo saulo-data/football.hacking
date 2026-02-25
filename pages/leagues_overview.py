@@ -24,14 +24,14 @@ SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 INT = ['INT, INT-2']
 if st.session_state['logged_in']:
     if st.session_state['user']['plan'] == 'free':
-        LEAGUES = ['LaLiga']
+        leagues = ['LaLiga']
     else:
-        LEAGUES = col_fotmob.distinct('general.league')
+        leagues = col_fotmob.distinct('general.league')
     #function to collect league names
     @st.cache_data(ttl='12h', show_spinner=False)
-    def get_leagues_data(seasons: list, exclude: Union[list, None]) -> list:
+    def get_leagues_data(seasons: list, exclude: Union[list, None], leagues: list) -> list:
         leagues_data = {}
-        leagues = list(collection.find({'general.country': {"$nin": exclude}, 'general.league': {'$in': LEAGUES}, 'general.season': {"$in": seasons}}, {'_id': 0, 'general': 1}))
+        leagues = list(collection.find({'general.country': {"$nin": exclude}, 'general.league': {'$in': leagues}, 'general.season': {"$in": seasons}}, {'_id': 0, 'general': 1}))
         for league in leagues:
             title  = f"{league['general']['country']} - {league['general']['league']} - Season {league['general']['season']}"
             if title not in leagues_data.keys():
@@ -210,7 +210,7 @@ if st.session_state['logged_in']:
     
     st.title(f'Open-Play xG per 100 Passes Charts')
     st.subheader('Select a league to analyze the open-play xG per 100 passes data')
-    leagues_data = get_leagues_data(seasons=SEASONS, exclude=INT)
+    leagues_data = get_leagues_data(seasons=SEASONS, exclude=INT, leagues=leagues)
     league = st.selectbox(label='Select a League', options=leagues_data.keys())
     teams = get_teams_names(country=leagues_data[league]['country'], league=leagues_data[league]['league'], season=leagues_data[league]['season'])
     
