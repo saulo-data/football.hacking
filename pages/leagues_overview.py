@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from football_main_app import col_fotmob
+from football_main_app import col_fotmob, user
 from urllib.request import urlopen
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.pyplot as plt
@@ -23,12 +23,13 @@ text = '#073d05'
 YEAR = 2026
 SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 INT = ['INT, INT-2']
+LEAGUES = ['LaLiga'] if user['plan'] == 'premium' else col.fotmob.distinct('general.league')
 
 #function to collect league names
 @st.cache_data(ttl='12h', show_spinner=False)
 def get_leagues_data(seasons: list, exclude: Union[list, None]) -> list:
     leagues_data = {}
-    leagues = list(collection.find({'general.league': {"$nin": exclude}, 'general.season': {"$in": seasons}}, {'_id': 0, 'general': 1}))
+    leagues = list(collection.find({'general.country': {"$nin": exclude}, 'general.league': {'$in': LEAGUES}, 'general.season': {"$in": seasons}}, {'_id': 0, 'general': 1}))
     for league in leagues:
         title  = f"{league['general']['country']} - {league['general']['league']} - Season {league['general']['season']}"
         if title not in leagues_data.keys():
