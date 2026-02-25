@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from football_main_app import col_fotmob, user_session
+from football_main_app import col_fotmob
 from urllib.request import urlopen
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ text = '#073d05'
 YEAR = 2026
 SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 INT = ['INT, INT-2']
-LEAGUES = ['LaLiga'] if user_session['plan'] == 'free' else col_fotmob.distinct('general.league')
+LEAGUES = ['LaLiga'] if st.session_state['user']['plan'] == 'free' else col_fotmob.distinct('general.league')
 
 #function to collect league names
 @st.cache_data(ttl='12h', show_spinner=False)
