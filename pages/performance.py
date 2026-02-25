@@ -27,7 +27,7 @@ if st.session_state['logged_in']:
     #get data from mongodb database
     @st.cache_data(show_spinner=False)
     def get_stats(cups: list, team: str, league: str, seasons: list) -> list:
-        stats = list(col.aggregate([{"$match": {"general.country": {"$nin": cups}, 'general.season': {'$in': seasons}, "general.league": league, "$or": [{"teams.home.name": team}, {"teams.away.name": team}]}}, 
+        stats = list(col.aggregate([{"$match": {"general.country": {"$nin": INT}, 'general.season': {'$in': seasons}, "general.league": league, "$or": [{"teams.home.name": team}, {"teams.away.name": team}]}}, 
                            {"$project": {"_id": 0, "general.round": 1, 'general.season': 1, "general.league": 1,"teams.home.name": 1, "teams.away.name": 1, "stats": 1, 'result': 1}}]))
         return stats
         
