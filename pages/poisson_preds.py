@@ -376,7 +376,7 @@ if st.session_state['logged_in']:
         btts_df = probs_to_df(btts)
         goal_df = probs_to_df(goal_probs)
     
-        custom_cmap = create_colormap(colors=["#2F3B2F", "#15E615"])
+        custom_cmap = create_colormap(colors=["#2F3B2F", "w", "#15E615"])
     
         st.header('Poisson Heatmap and Weighted Perfomances Home/Away')
         st.text('Weighted Performances are based on metrics such as Open-Play xG Per 100 Passes and so on.')
