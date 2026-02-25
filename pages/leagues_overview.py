@@ -12,17 +12,18 @@ from typing import Union
 
 st.set_page_config(page_title="Leagues Overview")
 
-collection = col_fotmob
-
-#setting colors
-background = '#e1ece1'
-text = '#073d05'
-
-#filtering data
-YEAR = 2026
-SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
-INT = ['INT, INT-2']
 if st.session_state['logged_in']:
+    collection = col_fotmob
+
+    #setting colors
+    background = '#e1ece1'
+    text = '#073d05'
+    
+    #filtering data
+    YEAR = 2026
+    SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
+    INT = ['INT, INT-2']
+    
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
