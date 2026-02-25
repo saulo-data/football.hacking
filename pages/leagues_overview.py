@@ -18,7 +18,6 @@ collection = col_fotmob
 background = '#e1ece1'
 text = '#073d05'
 
-st.text(user)
 #filtering data
 YEAR = 2026
 SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
