@@ -78,7 +78,7 @@ else:
             st.badge("Plan: Premium", icon=":material/star_shine:", color="green")
         elif user_session['plan'] == 'free':
             st.badge("Plan: Free")
-            st.warning("Become a premium subscriber to the Football Hacking newsletter to get access to all the leagues in our database and receive exclusive content straight to your inbox. Link in the sidebar.")
+            st.warning("Become a premium subscriber to the Football Hacking newsletter on Substack to get access to all the leagues in our database and receive exclusive content straight to your inbox. Link in the sidebar (Website).")
         else:
             st.warning('Something went wrong!')
     except Exception:
@@ -91,8 +91,8 @@ with st.sidebar:
 
     st.subheader("My Links")
     st.link_button('Website', 'https://www.footballhacking.com', width='stretch')
-    st.link_button('E-Book MplSoccer | Free', 'subscribepage.io/mplsoccer', width='stretch')
-    st.link_button('E-Book Aposta Consciente | Free', "subscribepage.io/aposta-consciente", width='stretch')
+    st.link_button('E-Book MplSoccer', 'subscribepage.io/mplsoccer', width='stretch')
+    st.link_button('E-Book Aposta Consciente', "subscribepage.io/aposta-consciente", width='stretch')
     st.link_button("Instagram", "https://www.instagram.com/football.hacking/", width='stretch')
     st.link_button("X", "https://x.com/footballhacking", use_container_width=True)
     st.link_button('YouTube', 'https://www.youtube.com/channel/UCkSw2eyetrr8TByFis0Uyug', width='stretch')    
