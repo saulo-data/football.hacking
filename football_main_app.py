@@ -14,6 +14,9 @@ col_whoscored_matches = db.whoscored_matches
 
 st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
 
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+
 if not st.user.is_logged_in:
     st.text("""Please log in to access the full functionality of the platform. Logging in ensures a personalized experience and allows you to use all available features and analytical tools.""")
     
@@ -64,6 +67,7 @@ else:
         user_session['on_mailing_list'] = False
         col_users.insert_one(user_session)
 
+    st.session_state['logged_in'] = True
     pg_2.run()
     
     if st.button("Log out", width=250, type='primary'):
