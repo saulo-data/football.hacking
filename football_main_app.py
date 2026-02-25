@@ -40,7 +40,8 @@ else:
         user['plan'] = user_on_db['plan']
     except Exception:
         user['plan'] = 'free'
-    
+
+    st.user['plan'] = user['plan']
     
     pg_2 = st.navigation([
         st.Page('pages/home.py', title='Home'),
