@@ -40,7 +40,11 @@ else:
         user['plan'] = user_on_db['plan']
     except Exception:
         user['plan'] = 'free'
-    
+        
+    if 'user' not in st.session_state:
+        st.session_state['user'] = user
+
+    user_session = st.session_state['user']
     pg_2 = st.navigation([
         st.Page('pages/home.py', title='Home'),
         st.Page('pages/poisson_preds.py', title='Poisson Preds'),
@@ -52,22 +56,22 @@ else:
     ], position='top')
 
     if user['email'] in emails:
-        col_users.update_one({'email': user['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
+        col_users.update_one({'email': user_session['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
         
     else:
-        user['number_of_access'] = 1
-        user['last_seen_on'] = datetime.now()
-        user['on_mailing_list'] = False
-        col_users.insert_one(user)
+        user_session['number_of_access'] = 1
+        user_session['last_seen_on'] = datetime.now()
+        user_session['on_mailing_list'] = False
+        col_users.insert_one(user_session)
 
     pg_2.run()
     
     if st.button("Log out", width=250, type='primary'):
         st.logout()
     st.write(f"Hello, {user['name']}!")
-    if user['plan'] == 'premium':
+    if user_session['plan'] == 'premium':
         st.badge("Plan: Premium", icon=":material/star_shine:", color="green")
-    elif user['plan'] == 'free':
+    elif user_session['plan'] == 'free':
         st.badge("Plan: Free")
     else:
         st.warning('Something went wrong!')
