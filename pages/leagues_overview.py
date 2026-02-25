@@ -23,7 +23,7 @@ text = '#073d05'
 YEAR = 2026
 SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
 INT = ['INT, INT-2']
-LEAGUES = ['LaLiga'] if user['plan'] == 'free' else col.fotmob.distinct('general.league')
+LEAGUES = ['LaLiga'] if user['plan'] == 'free' else col_fotmob.distinct('general.league')
 
 #function to collect league names
 @st.cache_data(ttl='12h', show_spinner=False)
