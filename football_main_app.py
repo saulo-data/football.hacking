@@ -33,8 +33,6 @@ else:
             'name': st.user.name, 
             'email': st.user.email
         }
-
-    user_on_db = list(col_users.find({'email': user['email']}))[0]
     
     pg_2 = st.navigation([
         st.Page('pages/home.py', title='Home'),
@@ -48,6 +46,7 @@ else:
 
     if user['email'] in emails:
         col_users.update_one({'email': user['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
+        user_on_db = list(col_users.find({'email': user['email']}))[0]
     else:
         user['number_of_access'] = 1
         user['last_seen_on'] = datetime.now()
