@@ -156,7 +156,7 @@ if st.session_state['logged_in']:
         skew_league = np.round(skew(data[score_home] - data[score_away]), 2)
 
 
-    return d_home, d_away, d_skellmam, d_total_goals, skew_league
+        return d_home, d_away, d_skellmam, d_total_goals, skew_league
     
     def get_matrix_poisson(home_goals: float, away_goals: float, max_goals: int) -> np.outer:
         home_probs = [poisson.pmf(i, home_goals) for i in range(max_goals)]
