@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from football_main_app import col_fotmob
-from scipy.stats import poisson
+from scipy.stats import poisson, skew
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
