@@ -441,7 +441,7 @@ if st.session_state['logged_in']:
     """)
     
         
-        submitted, home, away = input_form(home_teams=home_teams, away_teams=away_teams)
+    submitted, home, away = input_form(home_teams=home_teams, away_teams=away_teams)
         
     if submitted: 
         total_home_avg, total_away_avg = venue_goals_avg(df=df_league, column_home='score_home', column_away='score_away')
