@@ -139,7 +139,24 @@ if st.session_state['logged_in']:
         away_goals = away_of_cap * home_def_cap * total_away_avg
     
         return home_goals, away_goals
-        
+
+    
+    def get_dispersion_metrics(data: pd.DataFrame, score_home: str, score_away: str, goals_sum: str) -> tuple[np.float64]:
+        score_home_mean = np.mean(data[score_home])
+        score_home_var = np.var(data[score_home])
+        score_away_mean = np.mean(data[score_away])
+        score_away_var = np.var(data[score_away])
+        total_goals_mean = np.mean(data[goals_sum])
+        total_goals_var = np.var(data[goals_sum])
+    
+        d_home = np.round(score_home_var / score_home_mean, 2)
+        d_away = np.round(score_away_var / score_away_mean, 2)
+        d_skellmam = np.round(np.var(data[score_home] - data[score_away]) / total_goals_mean, 2)
+        d_total_goals = np.round(total_goals_var / total_goals_mean, 2)
+        skew_league = np.round(skew(data[score_home] - data[score_away]), 2)
+
+
+    return d_home, d_away, d_skellmam, d_total_goals, skew_league
     
     def get_matrix_poisson(home_goals: float, away_goals: float, max_goals: int) -> np.outer:
         home_probs = [poisson.pmf(i, home_goals) for i in range(max_goals)]
@@ -352,11 +369,80 @@ if st.session_state['logged_in']:
     df_league = df[df['league'] == league]
     
     st.dataframe(df_league.drop(columns=['home_image', 'away_image']), hide_index=True)
+    if len(df_league) < 180:
+        st.warning(f"{league} still does not have enough matches for reliable predictability using the Poisson distribution. It is recommended to wait until there are more rounds played.", icon="🚨")
     home_teams = df_league['home'].unique()
     away_teams = df_league['away'].unique()
+
+    d_home, d_away, d_skellmam, d_total_goals, skew_league = get_dispersion_metrics(data=df_league, score_home='score_home', score_away='score_away', goals_sum='goals_sum')
+    st.subheader(f"{league} Dispersion Metrics")
+    col_home, col_away, col_skellmam, col_total_goals, col_skew = st.columns(5)
     
-    submitted, home, away = input_form(home_teams=home_teams, away_teams=away_teams)
+    with col_home:
+        st.metric(label='Home Goals Dispersion', value=d_home, border=True)
+        if d_home > 1.3:
+            st.warning("High home-goal volatility detected. Large home scorelines may occur more often than the Poisson model expects.")
+        elif d_home > 1.1:
+            st.info("Moderate home-goal variability. Slight tendency for bigger home wins than predicted.")
+        elif d_home < 0.9:
+            st.info("Low home-goal variability. Home scoring is more controlled than the Poisson assumption.")
+        else:
+            st.success("Home goals behave close to a Poisson process.")
     
+    with col_away:
+        st.metric(label='Away Goals Dispersion', value=d_away, border=True)
+        if d_away > 1.3:
+            st.warning("High away-goal volatility detected. Rare high away scores may be more frequent than expected.")
+        elif d_away > 1.1:
+            st.info("Moderate away-goal variability. Slightly more dispersion than Poisson assumes.")
+        elif d_away < 0.9:
+            st.info("Low away-goal variability. Away scoring is more concentrated than expected.")
+        else:
+            st.success("Away goals behave close to a Poisson process.")
+    
+    with col_skellmam:
+        st.metric(label='Margin Dispersion (Skellmam)', value=d_skellmam, border=True)
+        if d_skellmam > 1.3:
+            st.warning("High winning-margin volatility detected. Large victories and heavy defeats are more frequent than expected.")
+        elif d_skellmam > 1.1:
+            st.info("Moderate winning-margin variability. Slightly wider margins than the model assumes.")
+        elif d_skellmam < 0.9:
+            st.info("Low winning-margin variability. Matches tend to be decided by narrow margins.")
+        else:
+            st.success("Winning margins behave close to the Skellam (Poisson-based) expectation.")
+    
+    with col_total_goals:
+        st.metric(label='Total Goal Dispersion', value=d_total_goals, border=True)
+        if d_total_goals > 1.3:
+            st.warning("High total-goal volatility detected. Extreme scorelines are more frequent than the Poisson model expects.")
+        elif d_total_goals > 1.1:
+            st.info("Moderate total-goal variability. Slightly more extreme totals may occur.")
+        elif d_total_goals < 0.9:
+                st.info("Low total-goal variability. Matches tend to be more controlled than the Poisson assumption.")
+        else:
+            st.success("Total goals behave close to a Poisson process.")
+    with col_skew:
+        st.metric(label='Winning Margin Asymmetry (Skew)', value=skew_league, border=True)
+        if skew_league > 0.5:
+            st.warning("Strong positive skew detected. Extreme results tend to favor large home victories.")
+        elif skew_league > 0.2:
+            st.info("Mild positive skew. Big home wins occur slightly more often than big away wins.")
+        elif skew_league < -0.5:
+            st.warning("Strong negative skew detected. Extreme results tend to favor large away victories.")
+        elif skew_league < -0.2:
+            st.info("Mild negative skew. Big away wins occur slightly more often.")
+        else:
+            st.success("Scoreline extremes are relatively symmetric between home and away.")
+    
+    
+    
+    st.markdown("""
+    Want to understand what these numbers mean in practice? Read the full breakdown here: 👉 [How to Read Dispersion and Skew in Football Models](https://open.substack.com/pub/saulofaria/p/how-to-read-dispersion-and-skew-in?r=30n7hp&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true)
+    """)
+    
+        
+        submitted, home, away = input_form(home_teams=home_teams, away_teams=away_teams)
+        
     if submitted: 
         total_home_avg, total_away_avg = venue_goals_avg(df=df_league, column_home='score_home', column_away='score_away')
         home_goals, away_goals = get_goals_metrics(df_league=df_league, column_team_home='home', home_team=home, column_home_scores='score_home', columns_team_away='away', away_team=away, columns_away_scores='score_away', 
