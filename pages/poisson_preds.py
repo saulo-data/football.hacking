@@ -327,6 +327,16 @@ if st.session_state['logged_in']:
             submitted = st.form_submit_button("Submit")
     
         return submitted, home, away
+
+    def ideal_len(data: pd.DataFrame, home_col: str = 'home', away_col: str = 'away') -> bool:
+        home_teams = data[home_col].unique()
+        away_teams = data[away_col].unique()
+
+        all_teams = list(set(home_teams) | set(away_teams))
+
+        min_matches = len(all_teams) * 10
+
+        return min_matches
     
     def style_df(df: pd.DataFrame) -> pd.DataFrame:
         styled_df = df.style.highlight_between(
@@ -369,7 +379,7 @@ if st.session_state['logged_in']:
     df_league = df[df['league'] == league]
     
     st.dataframe(df_league.drop(columns=['home_image', 'away_image']), hide_index=True)
-    if len(df_league) < 100:
+    if ideal_len(df_league) > len(df_league):
         st.warning(f"{league} still does not have enough matches for reliable predictability using the Poisson distribution. It is recommended to wait until there are more rounds played.", icon="🚨")
     home_teams = df_league['home'].unique()
     away_teams = df_league['away'].unique()
