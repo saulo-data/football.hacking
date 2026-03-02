@@ -48,7 +48,7 @@ else:
         if 'user' not in st.session_state:
             st.session_state['user'] = user
     
-        user_session = st.session_state['user']
+       
         pg_2 = st.navigation([
             st.Page('pages/home.py', title='Home'),
             st.Page('pages/poisson_preds.py', title='Poisson Preds'),
@@ -60,15 +60,15 @@ else:
         ], position='top')
     
         if user['email'] in emails:
-            col_users.update_one({'email': user_session['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
+            col_users.update_one({'email': st.session_state['user']['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
             
         else:
-            user_session['number_of_access'] = 1
-            user_session['last_seen_on'] = datetime.now()
-            user_session['on_mailing_list'] = False
-            col_users.insert_one(user_session)
+            st.session_state['user']['number_of_access'] = 1
+            st.session_state['user']['last_seen_on'] = datetime.now()
+            st.session_state['user']['on_mailing_list'] = False
+            col_users.insert_one(st.session_state['user'])
 
-        st.text(st.session_state['user'])
+        
         st.session_state['logged_in'] = True
         pg_2.run()
         
@@ -82,8 +82,8 @@ else:
             st.warning("Become a premium subscriber to the Football Hacking newsletter on Substack to get access to all the leagues in our database and receive exclusive content straight to your inbox. Link in the sidebar (Website).")
         else:
             st.warning('Something went wrong!')
-    except Exception:
-        st.text(' ')
+    except Exception as e:
+        st.text(e)
 
 with st.sidebar:
     st.image('static/image.png', 
