@@ -105,9 +105,8 @@ if st.session_state['logged_in']:
         return total_goals_avg
     
     def get_rho(d_total: float) -> float:
-        # rho = -0.12 + 0.08 * (d_total - 1)
-        rh0 = -0.1
-    
+        rho = -0.12 + 0.08 * (d_total - 1)
+        
         return rho
         
     
@@ -456,7 +455,7 @@ if st.session_state['logged_in']:
                                                total_home_avg=total_home_avg, total_away_avg=total_away_avg)
         
         total_goals_avg = get_total_goals_avg(df=df_league, column='goals_sum')
-        rho = get_rho(d_total=d_total_goals)
+        rho = get_rho(d_total=total_goals_avg)
         goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
         goal_matrix = apply_dixon_coles_to_matrix(P=goal_matrix, lam_home=home_goals, lam_away=away_goals, rho=rho)
     
