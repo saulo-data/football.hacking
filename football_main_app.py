@@ -66,6 +66,7 @@ else:
             user_session['number_of_access'] = 1
             user_session['last_seen_on'] = datetime.now()
             user_session['on_mailing_list'] = False
+            st.text(user_session)
             col_users.insert_one(user_session)
     
         st.session_state['logged_in'] = True
