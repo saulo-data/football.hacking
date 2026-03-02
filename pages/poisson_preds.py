@@ -71,11 +71,8 @@ if st.session_state['logged_in']:
             weighted_performances_home.append(weighted_performance_home)
     
             values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
-            try:
-                weighted_performance_away = np.average(values_away, weights=weights, axis=0)
-            except Exception as e:
-                print(e)
-                st.text(f"{stat['teams']['home']['name']} - {stat['teams']['away']['name']}")
+            
+            weighted_performance_away = np.average(values_away, weights=weights, axis=0)        
             weighted_performances_away.append(weighted_performance_away)
             
             score_home.append(stat['score']['home'])
@@ -458,7 +455,7 @@ if st.session_state['logged_in']:
                                                total_home_avg=total_home_avg, total_away_avg=total_away_avg)
         
         total_goals_avg = get_total_goals_avg(df=df_league, column='goals_sum')
-        rho = get_rho(d_total=total_goals_avg)
+        rho = get_rho(d_total_goals)
         goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
         goal_matrix = apply_dixon_coles_to_matrix(P=goal_matrix, lam_home=home_goals, lam_away=away_goals, rho=rho)
     
