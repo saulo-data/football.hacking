@@ -61,9 +61,9 @@ if st.session_state['logged_in']:
             leagues.append(f"{stat['general']['country']} - {stat['general']['league']}")
             seasons.append(stat['general']['season'])
             home.append(stat['teams']['home']['name'])
-            print(stat['teams']['home']['name'])
             home_images.append(stat['teams']['home']['image'])
             away.append(stat['teams']['away']['name'])
+            print(stat['teams']['away']['name'])
             away_images.append(stat['teams']['away']['image'])
     
             values_home = np.array([stat['stats']['ball_possession']['home'], stat['stats']['passes_opp_half_%']['home'], stat['stats']['touch_opp_box_100_passes']['home'], stat['stats']['xg_op_for_100_passes']['home']])
