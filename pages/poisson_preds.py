@@ -105,8 +105,8 @@ if st.session_state['logged_in']:
         return total_goals_avg
     
     def get_rho(d_total: float) -> float:
-        rho = -0.12 + 0.08 * (d_total - 1)
-        print(rho)
+        # rho = -0.12 + 0.08 * (d_total - 1)
+        rh0 = -0.1
     
         return rho
         
