@@ -71,7 +71,7 @@ if st.session_state['logged_in']:
             weighted_performances_home.append(weighted_performance_home)
     
             values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
-            
+            print(values_away)
             weighted_performance_away = np.average(values_away, weights=weights, axis=0)
             weighted_performances_away.append(weighted_performance_away)
             
