@@ -73,7 +73,7 @@ if st.session_state['logged_in']:
             values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
             try:
                 weighted_performance_away = np.average(values_away, weights=weights, axis=0)
-            except Exception: as e:
+            except Exception as e:
                 print(e)
                 st.text(f"{stat['teams']['home']['name']} - {stat['teams']['away']['name']}")
             weighted_performances_away.append(weighted_performance_away)
