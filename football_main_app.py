@@ -54,7 +54,7 @@ else:
         ], position='top')
     
         if st.session_state['user']['email'] in emails:
-            user_on_db = list(col_users.find({'email': st.session_state['email']}))[0]
+            user_on_db = list(col_users.find({'email': st.session_state['user']['email']}))[0]
             st.session_state['user']['plan'] = user_on_db['plan']
             col_users.update_one({'email': st.session_state['user']['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
             
