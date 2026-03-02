@@ -68,7 +68,7 @@ else:
             user_session['on_mailing_list'] = False
             col_users.insert_one(user_session)
 
-        st.text(st.session_state['user])
+        st.text(st.session_state['user'])
         st.session_state['logged_in'] = True
         pg_2.run()
         
