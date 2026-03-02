@@ -104,15 +104,11 @@ if st.session_state['logged_in']:
     
         return total_goals_avg
     
-    def get_rho(goals_avg: float) -> float:
-        if goals_avg >= 3.0:
-            rho = -0.02
-        elif goals_avg <= 2.6:
-            rho = -0.1
-        else:
-            rho = -0.05
+    def get_rho(d_total: float) -> float:
+        rho = -0.12 + 0.08 * (d_total - 1)
     
         return rho
+        
     
     def venue_goals_avg(df: pd.DataFrame, column_home: str, column_away: str) -> tuple[float]:
         home_goals_avg = df[column_home].mean()
@@ -459,7 +455,7 @@ if st.session_state['logged_in']:
                                                total_home_avg=total_home_avg, total_away_avg=total_away_avg)
         
         total_goals_avg = get_total_goals_avg(df=df_league, column='goals_sum')
-        rho = get_rho(goals_avg=total_goals_avg)
+        rho = get_rho(d_total=d_total_goals)
         goal_matrix = get_matrix_poisson(home_goals=home_goals, away_goals=away_goals, max_goals=7)
         goal_matrix = apply_dixon_coles_to_matrix(P=goal_matrix, lam_home=home_goals, lam_away=away_goals, rho=rho)
     
