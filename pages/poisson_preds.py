@@ -74,7 +74,7 @@ if st.session_state['logged_in']:
             try:
                 weighted_performance_away = np.average(values_away, weights=weights, axis=0)
             except Exception:
-                print(stat['teams']['home']['name'], stat['teams']['away']['name'], sep=' - ')
+                st.text(f"{stat['teams']['home']['name']} - {stat['teams']['away']['name']}")
             weighted_performances_away.append(weighted_performance_away)
             
             score_home.append(stat['score']['home'])
