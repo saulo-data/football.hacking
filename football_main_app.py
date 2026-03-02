@@ -68,7 +68,7 @@ else:
             st.session_state['user']['on_mailing_list'] = False
             col_users.insert_one(st.session_state['user'])
 
-        
+        st.text(st.session_state['user'])
         st.session_state['logged_in'] = True
         pg_2.run()
         
@@ -84,7 +84,7 @@ else:
             st.warning('Something went wrong!')
     except Exception as e:
         st.text(e)
-        st.text(st.session_state['user'])
+        
 
 with st.sidebar:
     st.image('static/image.png', 
