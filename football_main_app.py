@@ -65,7 +65,6 @@ else:
             st.session_state['user']['plan'] = 'free'
             col_users.insert_one(st.session_state['user'])
 
-        st.text(st.session_state['user'])
         st.session_state['logged_in'] = True
         pg_2.run()
         
