@@ -74,16 +74,17 @@ else:
         
         if st.button("Log out", width=250, type='primary'):
             st.logout()
-        st.write(f"Hello, {user_session['name']}!")
-        if user_session['plan'] == 'premium':
+        st.write(f"Hello, {st.session_state['user']['name']}!")
+        if st.session_state['user']['plan'] == 'premium':
             st.badge("Plan: Premium", icon=":material/star_shine:", color="green")
-        elif user_session['plan'] == 'free':
+        elif st.session_state['user']['plan'] == 'free':
             st.badge("Plan: Free")
             st.warning("Become a premium subscriber to the Football Hacking newsletter on Substack to get access to all the leagues in our database and receive exclusive content straight to your inbox. Link in the sidebar (Website).")
         else:
             st.warning('Something went wrong!')
     except Exception as e:
         st.text(e)
+        st.text(st.session_state['user'])
 
 with st.sidebar:
     st.image('static/image.png', 
