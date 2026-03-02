@@ -38,13 +38,7 @@ else:
                 'name': st.user.name, 
                 'email': st.user.email
             }
-        
-        user_on_db = list(col_users.find({'email': user['email']}))[0]
-        try:
-            user['plan'] = user_on_db['plan']
-        except Exception:
-            user['plan'] = 'free'
-        st.text(user)
+            
         if 'user' not in st.session_state:
             st.session_state['user'] = user
     
@@ -59,13 +53,16 @@ else:
             st.Page('pages/about.py', title='About Me')
         ], position='top')
     
-        if user['email'] in emails:
+        if st.session_state['user']['email'] in emails:
+            user_on_db = list(col_users.find({'email': st.session_state['email']}))[0]
+            st.session_state['user']['plan'] = user_on_db['plan']
             col_users.update_one({'email': st.session_state['user']['email']}, {"$inc": {'number_of_access': 1}, "$set": {'last_seen_on': datetime.now()}})
             
         else:
             st.session_state['user']['number_of_access'] = 1
             st.session_state['user']['last_seen_on'] = datetime.now()
             st.session_state['user']['on_mailing_list'] = False
+            st.session_state['user']['plan'] = 'free'
             col_users.insert_one(st.session_state['user'])
 
         st.text(st.session_state['user'])
