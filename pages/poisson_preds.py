@@ -525,7 +525,7 @@ if st.session_state['logged_in']:
         btts_df = probs_to_df(btts)
         goal_df = probs_to_df(goal_probs)
     
-        custom_cmap = create_colormap(colors=["#2F3B2F", "w", "#15E615"])
+        custom_cmap = create_colormap(colors=["#f4fbf7", "#b4d0bd", "#15E615"])
     
         st.header('Poisson Heatmap and Weighted Perfomances Home/Away')
         st.text('Weighted Performances are based on metrics such as Open-Play xG Per 100 Passes and so on.')
@@ -533,7 +533,7 @@ if st.session_state['logged_in']:
         col1, col2 = st.columns([9, 4])
     
         with col1:
-            st.dataframe(goals_table.style.background_gradient(cmap=custom_cmap, axis=None).format(precision=2))
+            st.dataframe(goals_table.style.background_gradient(cmap=custom_cmap, , vmin=0, vmax=100, axis=None).format(precision=2))
         with col2:
             plot_venue_performances(df=df_league, home_team=home, away_team=away)
     
