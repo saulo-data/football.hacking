@@ -555,7 +555,7 @@ if st.session_state['logged_in']:
         mc = mc_safety_match_odds([match_odds_df.iloc[0, 0] / 100, match_odds_df.iloc[0, 1] / 100, match_odds_df.iloc[0, 2] / 100], kappa=kappa)['status']
         
         st.subheader("Match Reliability Indicator (1x2)")
-        st.text("This diagnostic uses independent Monte Carlo simulations to evaluate how stable the match outcome distribution is.")
+        st.text("This diagnostic uses independent 50,000 Monte Carlo simulations to evaluate how stable the match outcome distribution is.")
     
         if mc == 0:
             st.success("Robust ✅ - The model shows stable behavior for this match. The underlying data is consistent, and the predicted probabilities are considered reliable within normal variance levels.")
