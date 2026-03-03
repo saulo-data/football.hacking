@@ -303,6 +303,63 @@ if st.session_state['logged_in']:
         df.columns = pd.MultiIndex.from_tuples(df.columns)
     
         return df.round(2)
+
+    #### monte carlo
+    def kappa_from_d_all(d_total, d_home=None, d_away=None, kappa_min=60, kappa_max=600, beta=7):
+    dist = abs(d_total - 1.0)
+    if d_home is not None:
+        dist = max(dist, abs(d_home - 1.0))
+    if d_away is not None:
+        dist = max(dist, abs(d_away - 1.0))
+    return float(kappa_min + (kappa_max - kappa_min) * np.exp(-beta * dist))
+
+    def mc_safety_match_odds(
+        p_base,
+        n_sims: int = 50_000,
+        kappa: float = 200.0,
+        seed: int = 42,
+        max_width_ok: float = 0.10,     
+        flip_ok: float = 0.10,          
+        drop_ok: float = 0.06           
+    ):
+        p_base = np.asarray(p_base, dtype=float)
+    
+        if p_base.shape != (3,) or np.any(p_base <= 0) or not np.isclose(np.round(p_base.sum()), 1.0, atol=1e-9):
+            raise ValueError("p_base deve ser [P(H), P(D), P(A)] >0 e somar 1.")
+    
+        rng = np.random.default_rng(seed)
+        sims = rng.dirichlet(kappa * p_base, size=n_sims)
+    
+        p10 = np.quantile(sims, 0.10, axis=0)
+        p90 = np.quantile(sims, 0.90, axis=0)
+        width = p90 - p10 
+    
+        fav_idx = int(np.argmax(p_base))   
+        flips = (np.argmax(sims, axis=1) != fav_idx).mean()
+    
+        fav_drop = float(p_base[fav_idx] - p10[fav_idx])
+    
+        max_width = float(width.max())
+        if (max_width <= max_width_ok) and (flips <= flip_ok) and (fav_drop <= drop_ok):
+            status = 0
+        elif (max_width <= max_width_ok * 1.4) and (flips <= flip_ok * 2.0) and (fav_drop <= drop_ok * 1.4):
+            status = 1
+        else:
+            status = 2
+    
+        lab = ["H", "D", "A"]
+        return {
+            "kappa_used": float(kappa),
+            "baseline": {f"P({lab[i]})": float(p_base[i]) for i in range(3)},
+            "p10": {f"P10({lab[i]})": float(p10[i]) for i in range(3)},
+            "p90": {f"P90({lab[i]})": float(p90[i]) for i in range(3)},
+            "width_p90_p10": {f"W({lab[i]})": float(width[i]) for i in range(3)},
+            "max_width": max_width,
+            "fav": lab[fav_idx],
+            "fav_drop_baseline_to_p10": fav_drop,
+            "flip_rate": float(flips),
+            "status": status,
+        }
     
     def input_form(home_teams: list, away_teams: list):
         with st.form(key='poisson'):
@@ -493,6 +550,19 @@ if st.session_state['logged_in']:
         with col4:
             st.subheader('BTTS Probabilities')
             st.dataframe(style_df(btts_df))
+
+        kappa = kappa_from_d_all(d_total=d_total_goals, d_home=d_home, d_away=d_away)
+        mc = mc_safety_match_odds([match_odds_df.iloc[0, 0] / 100, match_odds_df.iloc[0, 1] / 100, match_odds_df.iloc[0, 2] / 100], kappa=kappa)['status']
+        
+        st.subheader("Match Reliability Indicator (1x2)")
+        st.text("This diagnostic uses independent Monte Carlo simulations to evaluate how stable the match outcome distribution is.")
+    
+        if mc == 0:
+            st.success("Robust ✅ - The model shows stable behavior for this match. The underlying data is consistent, and the predicted probabilities are considered reliable within normal variance levels.")
+        elif mc == 1:
+            st.warning("Sensitive ⚠️ - The match presents moderate variability in the underlying data. While the model remains structurally sound, probabilities may shift with small contextual changes.")
+        else:
+            st.error("High Uncertainty ❌ - This match presents elevated uncertainty due to its specific data characteristics (e.g., dispersion, volatility, or structural imbalance). The model remains valid, but the predicted probabilities should be interpreted with additional caution for this particular game.")
     
         st.subheader('Overs and Unders Probabilities')
         st.dataframe(style_df(goal_df))
