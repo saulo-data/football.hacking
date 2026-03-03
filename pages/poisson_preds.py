@@ -306,12 +306,12 @@ if st.session_state['logged_in']:
 
     #### monte carlo
     def kappa_from_d_all(d_total, d_home=None, d_away=None, kappa_min=60, kappa_max=600, beta=7):
-    dist = abs(d_total - 1.0)
-    if d_home is not None:
-        dist = max(dist, abs(d_home - 1.0))
-    if d_away is not None:
-        dist = max(dist, abs(d_away - 1.0))
-    return float(kappa_min + (kappa_max - kappa_min) * np.exp(-beta * dist))
+        dist = abs(d_total - 1.0)
+        if d_home is not None:
+            dist = max(dist, abs(d_home - 1.0))
+        if d_away is not None:
+            dist = max(dist, abs(d_away - 1.0))
+        return float(kappa_min + (kappa_max - kappa_min) * np.exp(-beta * dist))
 
     def mc_safety_match_odds(
         p_base,
