@@ -343,35 +343,54 @@ if st.session_state['logged_in']:
     def style_odds_df(
         df_odds: pd.DataFrame,
         odd_cols: list,
-        cmap=FH_DARK,
+        cmap,
         vmin_log: float | None = None,
         vmax_log: float | None = None,
         decimals: int = 2
     ):
         """
         Colorir odds de forma robusta:
-        - gmap = log(odds) (melhor distribuição de cores)
+        - gmap = log(odds)
         - cmap invertido: odds menores (mais prováveis) mais escuras
         - NaN fica vazio
+        - protege contra colunas faltantes / shape mismatch (bug do Styler)
         """
-       
+    
+        # 1) mantém só colunas que realmente existem (e remove duplicatas)
+        odd_cols = list(dict.fromkeys([c for c in odd_cols if c in df_odds.columns]))
+    
+        # se não sobrou nada pra colorir, só formata e retorna
+        if not odd_cols:
+            return df_odds.style.format(f"{{:.{decimals}f}}", na_rep="")
+    
+        # 2) gmap alinhado EXATAMENTE ao subset
         g = df_odds.loc[:, odd_cols].apply(pd.to_numeric, errors="coerce")
         g = g.mask(g <= 0, np.nan)
         gmap = np.log(g)
-
-        sty = (
+    
+        # 3) se tudo virou NaN, não chama background_gradient (evita crash)
+        if not np.isfinite(gmap.to_numpy()).any():
+            return df_odds.style.format(f"{{:.{decimals}f}}", subset=odd_cols, na_rep="")
+    
+        # 4) se vmin/vmax não vieram, calcula ignorando NaN
+        if vmin_log is None:
+            vmin_log = float(np.nanmin(gmap.to_numpy()))
+        if vmax_log is None:
+            vmax_log = float(np.nanmax(gmap.to_numpy()))
+    
+        # 5) aplica gradiente só no subset certo
+        return (
             df_odds.style
             .background_gradient(
-                cmap=cmap.reversed(),              
+                cmap=cmap.reversed(),
                 axis=None,
-                subset=pd.IndexSlice[:, odd_cols],
-                gmap=gmap,
+                subset=odd_cols,     # <- mais seguro que IndexSlice aqui
+                gmap=gmap,           # <- mesmo shape e colunas
                 vmin=vmin_log,
                 vmax=vmax_log
             )
             .format(f"{{:.{decimals}f}}", subset=odd_cols, na_rep="")
         )
-        return sty
 
     stats = get_stats(year= YEAR, leagues_filter=leagues_filter)
     df = stats_to_df(stats=stats)   
