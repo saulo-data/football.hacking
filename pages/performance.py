@@ -1,6 +1,6 @@
 #libraries
 from pymongo import collection
-from football_main_app import col_fotmob
+from db_conn import db
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -8,7 +8,7 @@ from statistics import mean
 import streamlit as st
 
 if st.session_state['logged_in']:
-    col = col_fotmob
+    col = db.fotmob_stats
 
     #setting colors
     background = '#e1ece1'
@@ -22,7 +22,7 @@ if st.session_state['logged_in']:
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
-        leagues = col_fotmob.distinct('general.league')
+        leagues = col.distinct('general.league')
 
     #get data from mongodb database
     @st.cache_data(show_spinner=False)
