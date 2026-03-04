@@ -538,7 +538,10 @@ if st.session_state['logged_in']:
         with col1:
             st.dataframe(goals_table.style.background_gradient(cmap=custom_cmap, axis=None).format(precision=2))
         with col2:
-            plot_venue_performances(df=df_league, home_team=home, away_team=away)
+            try:
+                plot_venue_performances(df=df_league, home_team=home, away_team=away)
+            except Exception:
+                st.image('static/sorry.png')
     
         st.divider()
     
