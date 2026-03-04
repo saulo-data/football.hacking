@@ -13,7 +13,7 @@ from typing import Union
 st.set_page_config(page_title="Leagues Overview")
 
 if st.session_state['logged_in']:
-    col_fotmob = db.fotmob_stats
+    collection = db.fotmob_stats
 
     #setting colors
     background = '#e1ece1'
@@ -27,7 +27,7 @@ if st.session_state['logged_in']:
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
-        leagues = col_fotmob.distinct('general.league')
+        leagues = collection.distinct('general.league')
     #function to collect league names
     @st.cache_data(ttl='12h', show_spinner=False)
     def get_leagues_data(seasons: list, exclude: Union[list, None], leagues: list) -> list:
