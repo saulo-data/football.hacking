@@ -4,9 +4,6 @@ import streamlit as st
 from db_conn import db
 from matplotlib.colors import LinearSegmentedColormap
 
-
-
-
 st.set_page_config(
     page_title='Tables Predictions', 
     layout='wide', 
@@ -200,11 +197,6 @@ if st.session_state['logged_in']:
 
         return custom_camp
 
-    # def prob_to_odds(p):
-    #     if p == 0:
-    #         return np.nan  # não mostrar
-    #     return 100 / p
-
 
     @st.cache_data(show_spinner=False, ttl="12h")
     def table_leagues_set():
@@ -215,17 +207,17 @@ if st.session_state['logged_in']:
             if r.get("league_country") and r.get("league_name")
         }
 
-    # ======= 1) Colormap (mais contraste, dentro da sua paleta) =======
+
     FH_DARK = LinearSegmentedColormap.from_list(
         "fh_dark",
-        ["#f8fdf9", "#6ea889", "#041f10"]  # claro -> médio -> bem escuro
+        ["#f8fdf9", "#6ea889", "#041f10"] 
     )
 
     def probs_pct_to_odds_df(
         df_prob_pct: pd.DataFrame,
-        start_col: int = 2,        # "a partir da 3a coluna"
-        min_prob_pct: float = 0.0, # 0 => vira NaN (não mostra)
-        max_odd: float = 200.0     # odds acima disso somem (evita poluição)
+        start_col: int = 2,        
+        min_prob_pct: float = 0.0, 
+        max_odd: float = 200.0     
     ) -> tuple[pd.DataFrame, list]:
         """
         Converte colunas de probabilidade em % (0-100) para odds decimais.
@@ -234,23 +226,23 @@ if st.session_state['logged_in']:
         df = df_prob_pct.copy()
         cols = list(df.columns[start_col:])
 
-        # garante numérico apenas nessas colunas
+        
         p = df.loc[:, cols].apply(pd.to_numeric, errors="coerce")
 
-        # prob <= min_prob_pct -> NaN (não mostrar)
+       
         p = p.mask(p <= min_prob_pct, np.nan)
 
-        # odds = 100 / p
+        
         odds = 100.0 / p
 
-        # limpa infinito / absurdos
+        
         odds = odds.replace([np.inf, -np.inf], np.nan)
         odds = odds.mask(odds > max_odd, np.nan)
 
         df.loc[:, cols] = odds
         return df, cols
 
-    # ======= 3) Styler para Odds: usa gmap log(odds), mas mostra odds reais =======
+    
     def style_odds_df(
         df_odds: pd.DataFrame,
         odd_cols: list,
@@ -265,7 +257,7 @@ if st.session_state['logged_in']:
         - cmap invertido: odds menores (mais prováveis) mais escuras
         - NaN fica vazio
         """
-        # gmap log apenas onde tem odds válidas (>0)
+       
         g = df_odds.loc[:, odd_cols].apply(pd.to_numeric, errors="coerce")
         g = g.mask(g <= 0, np.nan)
         gmap = np.log(g)
@@ -273,7 +265,7 @@ if st.session_state['logged_in']:
         sty = (
             df_odds.style
             .background_gradient(
-                cmap=cmap.reversed(),              # odds baixas -> mais escuro
+                cmap=cmap.reversed(),              
                 axis=None,
                 subset=pd.IndexSlice[:, odd_cols],
                 gmap=gmap,
@@ -295,7 +287,7 @@ if st.session_state['logged_in']:
 
     key = "tables_preds__league"
 
-    # garante um valor válido SEM depender do streamlit adivinhar
+    
     prev = st.session_state.get(key)
     if prev not in options:
         st.session_state[key] = options[0]
@@ -340,12 +332,9 @@ if st.session_state['logged_in']:
     pos_df2['pos'] = pos_df2['pos'].apply(lambda x: f"{x}º")
     pos_df2 = pos_df2.rename(columns={'current_points': 'Current Pts', 'pos': 'Pos'})
 
-    # ======= 4) Uso (EXEMPLO) =======
-    # pos_df = ...  # seu dataframe com duas primeiras colunas não-prob e as demais probs (%)
-
-    # Ajuste esses valores como preferir
-    MAX_ODD = 200.0   # acima disso some da tabela (não polui)
-    MIN_PROB = 0.0    # prob 0% -> NaN (não mostra)
+    
+    MAX_ODD = 200.0   
+    MIN_PROB = 0.0    
 
     odds_df, odd_cols = probs_pct_to_odds_df(
         df_prob_pct=pos_df2,
@@ -353,11 +342,6 @@ if st.session_state['logged_in']:
         min_prob_pct=MIN_PROB,
         max_odd=MAX_ODD
     )
-
-    # Se quiser MAIS contraste nas cores:
-    # defina vmin/vmax no espaço log(odds). Exemplo: odds 1.2 a 50
-    # vmin_log = np.log(1.2)
-    # vmax_log = np.log(50)
 
     styled_odds = style_odds_df(
         df_odds=odds_df,
