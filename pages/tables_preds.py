@@ -467,14 +467,14 @@ if st.session_state['logged_in']:
     height = 450
     with tab1:
         cols = pos_df2.columns[2:]
-        st.dataframe(pos_df2.style.background_gradient(cmap=FH_DARK, gmap=pos_df2[cols], subset=pd.IndexSlice[:, cols], vmin=0, 
-                                                    vmax=100, low=0.005, high=0.3, axis=None).format(precision=2), height=height)
-    with tab2:
-        dups = style_odds.columns[style_odds.columns.duplicated()].tolist()
+        dups = pos_df2.columns[pos_df2.columns.duplicated()].tolist()
         if dups:
             st.error(f"Colunas duplicadas em match_odds_df: {dups}")
             st.write(match_odds_df.columns)
             st.stop()
+        st.dataframe(pos_df2.style.background_gradient(cmap=FH_DARK, gmap=pos_df2[cols], subset=pd.IndexSlice[:, cols], vmin=0, 
+                                                    vmax=100, low=0.005, high=0.3, axis=None).format(precision=2), height=height)
+    with tab2:
         st.dataframe(styled_odds, use_container_width=True, height=height)
 
     df_probs = (pos_df / 100.0).copy()
