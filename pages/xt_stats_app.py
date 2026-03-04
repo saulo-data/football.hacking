@@ -6,13 +6,13 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-from football_main_app import col_whoscored_calendar, col_whoscored_matches
+from db_conn import db
 import json
 
 if st.session_state['logged_in']:
 
-    col_calendar = col_whoscored_calendar
-    col_matches = col_whoscored_matches
+    col_calendar = db.whoscored_calendar
+    col_matches = db.whoscored_matches
     
     if st.session_state['user']['plan'] == 'free':
         leagues = ['ESP-La Liga']
