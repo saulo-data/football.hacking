@@ -22,17 +22,20 @@ if st.session_state['logged_in']:
     YEAR = 2026
     SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
     
-    if st.session_state['user']['plan'] == 'free':
-        leagues = ['LaLiga']
-    elif st.session_state['user']['plan'] == 'premium':
-        leagues = col_fotmob.distinct('general.league')
-    else:
-        st.stop()
+   if st.session_state['user']['plan'] == 'free':
+        leagues_filter = ('LaLiga',)   # tuple
+   else:
+        leagues_filter = tuple(col_fotmob.distinct('general.league'))
 
     @st.cache_data(show_spinner=False, ttl='12h')
-    def get_stats(year: int, leagues: list = leagues) -> dict:
-        stats = list(db.fotmob_stats.aggregate([{"$match": {"general.season": {"$in": [f"{year}", f"{year-1}/{year}"]}, "general.league": {"$in": leagues}}}, 
-                                            {"$project": {"_id": 0, "general": 1, "teams": 1, "score": 1}}]))
+    def get_stats(year: int, leagues_filter: tuple[str, ...]) -> dict:
+        stats = list(db.fotmob_stats.aggregate([
+            {"$match": {
+                "general.season": {"$in": [f"{year}", f"{year-1}/{year}"]},
+                "general.league": {"$in": list(leagues_filter)}
+            }},
+            {"$project": {"_id": 0, "general": 1, "teams": 1, "score": 1}}
+        ]))
         
         return stats
 
@@ -370,7 +373,7 @@ if st.session_state['logged_in']:
         )
         return sty
 
-    stats = get_stats(year= YEAR)
+    stats = get_stats(year= YEAR, leagues_filter=leagues_filter)
     df = stats_to_df(stats=stats)   
 
 
