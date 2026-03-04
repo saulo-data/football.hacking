@@ -9,8 +9,10 @@ import networkx as nx
 from db_conn import db
 import json
 
-if st.session_state['logged_in']:
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
 
+if st.session_state['logged_in']:
     col_calendar = db.whoscored_calendar
     col_matches = db.whoscored_matches
     
@@ -484,6 +486,9 @@ if st.session_state['logged_in']:
         
     except Exception as e:
         st.text(' ')
+else:
+    st.warning("You must login to access this page.")
+    st.stop()
     
     
     st.caption("Created by Saulo Faria - Data Scientist Specialized in Football")
