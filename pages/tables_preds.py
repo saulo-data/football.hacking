@@ -424,15 +424,19 @@ if st.session_state['logged_in']:
 
 
     df_table = df[df['league'] == league_selected]
-    st.dataframe(df_table)
     country, league_name = split_strings(league_selected)
+    st.text(country)
+    st.text(league_name)
     league_id, teams = get_stats_tables(country, league_name)
+    st.text(league_id)
+    st.text(teams)
 
     if league_id is None:
-        st.warning(f"Sem tabela no banco para {league_selected}. Selecione outra liga.")
+        st.warning(f"No table for {league_selected}. Selected another league.")
         st.stop()
 
     current_points = pd.json_normalize(teams)
+    st.text(current_points)
     next_matches = get_next_matches(league_id=league_id)
 
 
