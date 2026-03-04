@@ -4,6 +4,7 @@ from datetime import datetime
 from db_conn import db_local
 
 st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
+col_users = db_local.users
 
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
