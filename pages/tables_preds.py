@@ -28,7 +28,7 @@ if st.session_state['logged_in']:
         leagues = col_fotmob.distinct('general.league')
 
     @st.cache_data(show_spinner=False, ttl='12h')
-    def get_stats(year: int) -> dict:
+    def get_stats(year: int, leagues: list = leagues) -> dict:
         stats = list(db.fotmob_stats.aggregate([{"$match": {"general.season": {"$in": [f"{year}", f"{year-1}/{year}"]}, "general.league": {"$in": leagues}}}, 
                                             {"$project": {"_id": 0, "general": 1, "teams": 1, "score": 1}}]))
         
