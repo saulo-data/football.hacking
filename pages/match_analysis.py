@@ -3,11 +3,11 @@ import streamlit as st
 import pandas as pd
 from pymongo import collection
 import plotly.express as px
-from football_main_app import col_fotmob
+from db_conn import db
 
 
 if st.session_state['logged_in']:
-    col = col_fotmob
+    col = db.fotmob_stats
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
