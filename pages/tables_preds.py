@@ -23,9 +23,9 @@ if st.session_state['logged_in']:
     SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
     
    if st.session_state['user']['plan'] == 'free':
-        leagues_filter = ('LaLiga',)   # tuple
+       leagues_filter = ('LaLiga',)   # tuple
    else:
-        leagues_filter = tuple(col_fotmob.distinct('general.league'))
+       leagues_filter = tuple(col_fotmob.distinct('general.league'))
 
     @st.cache_data(show_spinner=False, ttl='12h')
     def get_stats(year: int, leagues_filter: tuple[str, ...]) -> dict:
