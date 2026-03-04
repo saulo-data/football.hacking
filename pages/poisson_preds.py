@@ -42,82 +42,76 @@ if st.session_state['logged_in']:
         
         return stats
     
-    def stats_to_df(stats: dict) -> pd.DataFrame:
-    
-        leagues = []
-        seasons = []
-        home = []
-        home_images = []
-        away = []
-        away_images = []
-        weighted_performances_home = []
-        weighted_performances_away = []
-        score_home = []
-        score_away = []
-        goals_sum = []
-        results = []
-    
-        weights = np.array([1.12, 1.25, 1.32, 1.50])
-    
-    
-        for stat in stats:
-            #print(stat)
-            leagues.append(f"{stat['general']['country']} - {stat['general']['league']}")
-            seasons.append(stat['general']['season'])
-            home.append(stat['teams']['home']['name'])
-            home_images.append(stat['teams']['home']['image'])
-            away.append(stat['teams']['away']['name'])
-            away_images.append(stat['teams']['away']['image'])
+    def stats_to_df(stats: list[dict]) -> pd.DataFrame:
+    rows = []
 
-            if stat['xg_coverage']:
-                values_home = np.array([stat['stats']['ball_possession']['home'], stat['stats']['passes_opp_half_%']['home'], stat['stats']['touch_opp_box_100_passes']['home'], stat['stats']['xg_op_for_100_passes']['home']])
-                
-                weighted_performance_home = np.average(values_home, weights=weights, axis=0)
-                weighted_performances_home.append(weighted_performance_home)
-        
-                values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
-    
-                weighted_performance_away = np.average(values_away, weights=weights, axis=0)            
-                weighted_performances_away.append(weighted_performance_away)
-            else:
-                continue
-            
-            score_home.append(stat['score']['home'])
-            score_away.append(stat['score']['away'])
-            goals_sum.append(stat['score']['home'] + stat['score']['away'])
-            results.append(stat['result'])
-    
-        if stat['xg_coverage']:
-            df = pd.DataFrame({
-                'league': leagues, 
-                'season': seasons,
-                'home': home, 
-                'home_image': home_images,
-                'away': away, 
-                'away_image': away_images,
-                'weighted_performance_home': weighted_performances_home, 
-                'weighted_performance_away': weighted_performances_away, 
-                'score_home': score_home, 
-                'score_away': score_away, 
-                'goals_sum': goals_sum,
-                'result': results
-        
-            })
-        else:
-            df = pd.DataFrame({
-                'league': leagues, 
-                'season': seasons,
-                'home': home, 
-                'home_image': home_images,
-                'away': away, 
-                'away_image': away_images,
-                'score_home': score_home, 
-                'score_away': score_away, 
-                'goals_sum': goals_sum,
-                'result': results
-            })
-    
-        return df
+    weights = np.array([1.12, 1.25, 1.32, 1.50], dtype=float)
+
+    for stat in stats:
+        league = f"{stat['general']['country']} - {stat['general']['league']}"
+        season = stat['general']['season']
+
+        home = stat['teams']['home']['name']
+        home_image = stat['teams']['home'].get('image')
+
+        away = stat['teams']['away']['name']
+        away_image = stat['teams']['away'].get('image')
+
+        score_home = stat.get('score', {}).get('home')
+        score_away = stat.get('score', {}).get('away')
+
+        goals_sum = None
+        if score_home is not None and score_away is not None:
+            goals_sum = score_home + score_away
+
+        result = stat.get('result')
+
+        # ✅ não explode se o campo não existir
+        has_xg = bool(stat.get('xg_coverage', False))
+
+        wph = np.nan
+        wpa = np.nan
+
+        if has_xg:
+            try:
+                values_home = np.array([
+                    stat['stats']['ball_possession']['home'],
+                    stat['stats']['passes_opp_half_%']['home'],
+                    stat['stats']['touch_opp_box_100_passes']['home'],
+                    stat['stats']['xg_op_for_100_passes']['home'],
+                ], dtype=float)
+
+                values_away = np.array([
+                    stat['stats']['ball_possession']['away'],
+                    stat['stats']['passes_opp_half_%']['away'],
+                    stat['stats']['touch_opp_box_100_passes']['away'],
+                    stat['stats']['xg_op_for_100_passes']['away'],
+                ], dtype=float)
+
+                wph = float(np.average(values_home, weights=weights))
+                wpa = float(np.average(values_away, weights=weights))
+            except Exception:
+                # se por algum motivo faltou uma métrica, mantém NaN
+                wph, wpa = np.nan, np.nan
+
+        rows.append({
+            "league": league,
+            "season": season,
+            "home": home,
+            "home_image": home_image,
+            "away": away,
+            "away_image": away_image,
+            "weighted_performance_home": wph,
+            "weighted_performance_away": wpa,
+            "score_home": score_home,
+            "score_away": score_away,
+            "goals_sum": goals_sum,
+            "result": result,
+            "xg_coverage": has_xg,  # opcional, mas útil
+        })
+
+    df = pd.DataFrame(rows)
+    return df
     
     def get_total_goals_avg(df: pd.DataFrame, column: str) -> float:
         total_goals_avg = df[column].mean()
