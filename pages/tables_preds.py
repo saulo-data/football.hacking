@@ -61,8 +61,7 @@ if st.session_state['logged_in']:
             'score_home': score_home, 
             'score_away': score_away
         })
-        st.text(df)
-        st.text(stats)
+    
         return df
 
     def split_strings(full_name: str) -> tuple[str]:
@@ -188,7 +187,7 @@ if st.session_state['logged_in']:
             index=teams,
             columns=[f"{i}º" for i in range(1, n_teams + 1)]
         ) * 100
-
+        st.dataframe(df)
         return df.round(2)
 
     def percent_to_odds_df(df_percent: pd.DataFrame, cap: float = 10000.0):
