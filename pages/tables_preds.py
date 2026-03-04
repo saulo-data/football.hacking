@@ -433,11 +433,8 @@ if st.session_state['logged_in']:
 
     current_points = pd.json_normalize(teams)
     next_matches = get_next_matches(league_id=league_id)
-    st.text('next matches')
     points_sims, teams = monte_carlo_table(next_matches, current_points, df_table, n_sims=50_000, seed=7)
-    st.text('points, teams')
     pos_df = position_matrix(points_sims, teams)
-    st.text('position_matrix')
     pos_df2 = pos_df.copy()
     pos_df2.insert(0, "current_points", current_points.set_index("team_name").loc[teams, "points"].astype(str))
     pos_df2.insert(1, "pos", current_points.set_index("team_name").loc[teams, "pos"].astype(str))
