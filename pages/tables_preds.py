@@ -307,7 +307,7 @@ if st.session_state['logged_in']:
         set(df["league"].dropna().astype(str).str.strip().unique().tolist()) & valid
     )
 
-    st.header("Monte Carlo Season Forecast")
+    st.title("Monte Carlo Season Forecast")
     st.info("These probabilities come from Monte Carlo simulations of the remaining fixtures.")
     st.markdown("""
     This table shows the **probability of each team finishing in every league position** based on Monte Carlo simulations of the remaining matches.
