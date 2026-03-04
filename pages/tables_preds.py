@@ -200,6 +200,26 @@ if st.session_state['logged_in']:
 
         return custom_camp
 
+    def _prep_df_probs(df_probs: pd.DataFrame) -> pd.DataFrame:
+        df = df_probs.copy()
+    
+        # columns -> int positions 1..N
+        df.columns = [int(c) for c in df.columns]
+        df = df.sort_index(axis=1)
+    
+        # fill/validate
+        if df.isna().any().any():
+            raise ValueError("df_probs contains NaN.")
+        if (df.values < 0).any():
+            raise ValueError("df_probs contains negative probabilities.")
+    
+        # normalize rows if needed
+        rs = df.sum(axis=1).values
+        if not np.allclose(rs, 1.0, atol=1e-6):
+            df = df.div(df.sum(axis=1), axis=0)
+    
+        return df
+
     def table_metrics_from_df_probs(
         df_probs: pd.DataFrame,
         current_positions: pd.Series | dict | None = None,
