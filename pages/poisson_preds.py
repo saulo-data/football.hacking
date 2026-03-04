@@ -115,6 +115,7 @@ if st.session_state['logged_in']:
                 'score_away': score_away, 
                 'goals_sum': goals_sum,
                 'result': results
+            })
     
         return df
     
