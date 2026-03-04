@@ -200,6 +200,75 @@ if st.session_state['logged_in']:
 
         return custom_camp
 
+    def table_metrics_from_df_probs(
+        df_probs: pd.DataFrame,
+        current_positions: pd.Series | dict | None = None,
+    ):
+        """
+        Returns 4 metrics:
+          1) Table Stability Index (TSI): mean prob of finishing in current position
+          2) Avg Position Shift (EPS): mean expected |final_pos - current_pos|
+          3) Rank Volatility (SD): mean std-dev of final position distribution
+          4) Entropy (normalized 0..1): mean normalized Shannon entropy of position distribution
+        """
+        df = _prep_df_probs(df_probs)
+        teams = df.index
+        positions = np.array(df.columns, dtype=int)
+        N = len(positions)
+    
+        # current positions:
+        # - if not provided: assume df index order equals current table order (1..N)
+        if current_positions is None:
+            cur_pos = pd.Series(np.arange(1, N + 1), index=teams, dtype=int)
+        else:
+            cur_pos = pd.Series(current_positions, index=teams, dtype=int).reindex(teams)
+            if cur_pos.isna().any():
+                missing = cur_pos[cur_pos.isna()].index.tolist()
+                raise ValueError(f"Missing current positions for teams: {missing}")
+    
+        P = df.to_numpy(dtype=float)
+        pos_to_col = {p: j for j, p in enumerate(positions)}
+    
+        # 1) Table Stability Index (mean diagonal by current position)
+        diag = np.array([P[i, pos_to_col[int(cur_pos.iloc[i])]] for i in range(len(teams))], dtype=float)
+        TSI = float(diag.mean())
+    
+        # 2) Avg Position Shift (EPS): E[|final - current|]
+        abs_dist = np.abs(positions.reshape(1, -1) - cur_pos.values.reshape(-1, 1))
+        EPS_i = (P * abs_dist).sum(axis=1)
+        EPS = float(EPS_i.mean())
+    
+        # 3) Rank Volatility (SD): std-dev of final position distribution
+        mu_i = (P * positions.reshape(1, -1)).sum(axis=1)
+        var_i = (P * (positions.reshape(1, -1) - mu_i.reshape(-1, 1)) ** 2).sum(axis=1)
+        SD_i = np.sqrt(var_i)
+        SD = float(SD_i.mean())
+    
+        # 4) Entropy (normalized 0..1)
+        eps = 1e-15
+        H_i = -(P * np.log(P + eps)).sum(axis=1)
+        Hnorm_i = H_i / np.log(N)
+        Hnorm = float(Hnorm_i.mean())
+    
+        return {
+            "table_stability_index": TSI,
+            "avg_position_shift": EPS,
+            "rank_volatility_sd": SD,
+            "entropy_norm": Hnorm,
+            # optional per-team outputs (useful for UI)
+            "per_team": pd.DataFrame(
+                {
+                    "current_pos": cur_pos.values,
+                    "p_same_pos": diag,
+                    "eps_shift": EPS_i,
+                    "rank_sd": SD_i,
+                    "entropy_norm": Hnorm_i,
+                    "expected_pos": mu_i,
+                },
+                index=teams,
+            ).sort_values("current_pos")
+        }
+
 
     @st.cache_data(show_spinner=False, ttl="12h")
     def table_leagues_set():
