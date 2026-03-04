@@ -187,7 +187,7 @@ if st.session_state['logged_in']:
             index=teams,
             columns=[f"{i}º" for i in range(1, n_teams + 1)]
         ) * 100
-        st.dataframe(df)
+        
         return df.round(2)
 
     def percent_to_odds_df(df_percent: pd.DataFrame, cap: float = 10000.0):
@@ -424,6 +424,7 @@ if st.session_state['logged_in']:
 
 
     df_table = df[df['league'] == league_selected]
+    st.dataframe(df_table)
     country, league_name = split_strings(league_selected)
     league_id, teams = get_stats_tables(country, league_name)
 
