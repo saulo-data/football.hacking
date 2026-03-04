@@ -37,7 +37,8 @@ if st.session_state['logged_in']:
     def get_stats(year: int, leagues: list) -> dict:
         YEAR = year
         stats = list(col.aggregate([{"$match": {"general.league": {"$in": leagues}, "general.season": {"$in": SEASONS}}}, 
-                                              {"$project": {"_id": 0, "general": 1, "teams": 1, "stats": 1, "score": 1, 'result': 1}}]))
+                                              {"$project": {"_id": 0, "general": 1, "teams": 1, "stats": 1, "score": 1, 'result': 1, 
+                                                           'xg_coverage': 1}}]))
         
         return stats
     
@@ -67,38 +68,53 @@ if st.session_state['logged_in']:
             home_images.append(stat['teams']['home']['image'])
             away.append(stat['teams']['away']['name'])
             away_images.append(stat['teams']['away']['image'])
-    
-            values_home = np.array([stat['stats']['ball_possession']['home'], stat['stats']['passes_opp_half_%']['home'], stat['stats']['touch_opp_box_100_passes']['home'], stat['stats']['xg_op_for_100_passes']['home']])
-            
-            weighted_performance_home = np.average(values_home, weights=weights, axis=0)
-            weighted_performances_home.append(weighted_performance_home)
-    
-            values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
 
-            weighted_performance_away = np.average(values_away, weights=weights, axis=0)            
-            weighted_performances_away.append(weighted_performance_away)
+            if stat['xg_coverage']:
+                values_home = np.array([stat['stats']['ball_possession']['home'], stat['stats']['passes_opp_half_%']['home'], stat['stats']['touch_opp_box_100_passes']['home'], stat['stats']['xg_op_for_100_passes']['home']])
+                
+                weighted_performance_home = np.average(values_home, weights=weights, axis=0)
+                weighted_performances_home.append(weighted_performance_home)
+        
+                values_away = np.array([stat['stats']['ball_possession']['away'], stat['stats']['passes_opp_half_%']['away'], stat['stats']['touch_opp_box_100_passes']['away'], stat['stats']['xg_op_for_100_passes']['away']])
+    
+                weighted_performance_away = np.average(values_away, weights=weights, axis=0)            
+                weighted_performances_away.append(weighted_performance_away)
+            else:
+                continue
             
             score_home.append(stat['score']['home'])
             score_away.append(stat['score']['away'])
             goals_sum.append(stat['score']['home'] + stat['score']['away'])
             results.append(stat['result'])
     
-    
-        df = pd.DataFrame({
-            'league': leagues, 
-            'season': seasons,
-            'home': home, 
-            'home_image': home_images,
-            'away': away, 
-            'away_image': away_images,
-            'weighted_performance_home': weighted_performances_home, 
-            'weighted_performance_away': weighted_performances_away, 
-            'score_home': score_home, 
-            'score_away': score_away, 
-            'goals_sum': goals_sum,
-            'result': results
-    
-        })
+        if stat['xg_coverage']:
+            df = pd.DataFrame({
+                'league': leagues, 
+                'season': seasons,
+                'home': home, 
+                'home_image': home_images,
+                'away': away, 
+                'away_image': away_images,
+                'weighted_performance_home': weighted_performances_home, 
+                'weighted_performance_away': weighted_performances_away, 
+                'score_home': score_home, 
+                'score_away': score_away, 
+                'goals_sum': goals_sum,
+                'result': results
+        
+            })
+        else:
+            df = pd.DataFrame({
+                'league': leagues, 
+                'season': seasons,
+                'home': home, 
+                'home_image': home_images,
+                'away': away, 
+                'away_image': away_images,
+                'score_home': score_home, 
+                'score_away': score_away, 
+                'goals_sum': goals_sum,
+                'result': results
     
         return df
     
