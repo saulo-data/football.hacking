@@ -251,7 +251,7 @@ if st.session_state['logged_in']:
     
         # 1) Table Stability Index (mean diagonal by current position)
         diag = np.array([P[i, pos_to_col[int(cur_pos.iloc[i])]] for i in range(len(teams))], dtype=float)
-        TSI = float(diag.mean())
+        TSI = float(diag.mean()) * 100
     
         # 2) Avg Position Shift (EPS): E[|final - current|]
         abs_dist = np.abs(positions.reshape(1, -1) - cur_pos.values.reshape(-1, 1))
@@ -468,7 +468,7 @@ if st.session_state['logged_in']:
     
     st.subheader("Monte Carlo Diagnostics")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Table Stability", f"{metrics['table_stability_index']:.3f}", border=True)
+    c1.metric("Table Stability", f"{metrics['table_stability_index']:.2f}", border=True)
     c2.metric("Avg Position Shift", f"{metrics['avg_position_shift']:.3f}", border=True)
     c3.metric("Rank Volatility (SD)", f"{metrics['rank_volatility_sd']:.3f}", border=True)
     c4.metric("Entropy (0–1)", f"{metrics['entropy_norm']:.3f}", border=True)
