@@ -10,6 +10,9 @@ st.set_page_config(
 
 )
 
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
 if st.session_state['logged_in']:
     col_fotmob = db.fotmob_stats
     col_matches = db.fotmob_next_matches 
@@ -379,4 +382,7 @@ if st.session_state['logged_in']:
 
     Therefore, results should be interpreted as **probabilistic forecasts rather than guarantees**.
     """)
+else:
+    st.warning("You must login to access this page.")
+    st.stop()
 
