@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from football_main_app import col_fotmob
+from db_conn import db
 from scipy.stats import poisson, skew
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 if st.session_state['logged_in']:
-    col = col_fotmob
+    col = db.fotmob_stats
 
     #setting colors
     background = '#e1ece1'
@@ -28,7 +28,7 @@ if st.session_state['logged_in']:
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
-        leagues = col_fotmob.distinct('general.league')
+        leagues = col.distinct('general.league')
 
     @st.cache_data(show_spinner=False, ttl='12h')
     def get_stats(year: int, leagues: list) -> dict:
