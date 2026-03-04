@@ -61,7 +61,8 @@ if st.session_state['logged_in']:
             'score_home': score_home, 
             'score_away': score_away
         })
-
+        st.text(df)
+        st.text(stats)
         return df
 
     def split_strings(full_name: str) -> tuple[str]:
