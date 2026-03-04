@@ -14,6 +14,9 @@ st.set_page_config(
 
 )
 
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
 if st.session_state['logged_in']:
     col = db.fotmob_stats
 
@@ -566,4 +569,6 @@ if st.session_state['logged_in']:
     
         st.subheader('Overs and Unders Probabilities')
         st.dataframe(style_df(goal_df))
-        
+else:
+    st.warning("You must login to access this page")
+    st.stop()
