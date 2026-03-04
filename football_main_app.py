@@ -3,10 +3,6 @@ from pymongo import MongoClient
 from datetime import datetime
 from db_conn import db_local
 
-client = MongoClient(st.secrets['url_board'])
-db_local = client.football_data
-col_users = db_local.users
-
 st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
 
 if 'logged_in' not in st.session_state:
