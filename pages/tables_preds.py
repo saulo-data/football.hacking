@@ -22,9 +22,9 @@ if st.session_state['logged_in']:
     YEAR = 2026
     SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
     
-   if st.session_state['user']['plan'] == 'free':
+    if st.session_state['user']['plan'] == 'free':
        leagues_filter = ('LaLiga',)   # tuple
-   else:
+    else:
        leagues_filter = tuple(col_fotmob.distinct('general.league'))
 
     @st.cache_data(show_spinner=False, ttl='12h')
