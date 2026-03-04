@@ -5,6 +5,8 @@ from pymongo import collection
 import plotly.express as px
 from db_conn import db
 
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
 
 if st.session_state['logged_in']:
     col = db.fotmob_stats
@@ -197,3 +199,6 @@ if st.session_state['logged_in']:
                 
         except Exception as e:
             st.text(e)
+else:
+    st.warning("You must login to access this page")
+    st.stop()
