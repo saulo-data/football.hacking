@@ -7,6 +7,9 @@ import plotly.express as px
 from statistics import mean
 import streamlit as st
 
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
 if st.session_state['logged_in']:
     col = db.fotmob_stats
 
@@ -238,4 +241,7 @@ if st.session_state['logged_in']:
         st.write("Ops! Something Went Wrong! - Maybe You've Chosen a League which Hasn't Started Yet Or Has Less Than 6 Matchweeks.")
         
     st.caption("Created by Saulo Faria - Data Scientist Specialized in Football")
+else:
+    st.warning("You must login to access this page")
+    st.stop()
                
