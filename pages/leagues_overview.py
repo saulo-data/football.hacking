@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from football_main_app import col_fotmob
+from db_conn import db
 from urllib.request import urlopen
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.pyplot as plt
@@ -13,7 +13,7 @@ from typing import Union
 st.set_page_config(page_title="Leagues Overview")
 
 if st.session_state['logged_in']:
-    collection = col_fotmob
+    col_fotmob = db.fotmob_stats
 
     #setting colors
     background = '#e1ece1'
