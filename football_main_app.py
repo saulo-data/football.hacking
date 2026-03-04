@@ -1,16 +1,11 @@
 import streamlit as st
 from pymongo import MongoClient
 from datetime import datetime
+from db_conn import db_local
 
 client = MongoClient(st.secrets['url_board'])
 db_local = client.football_data
 col_users = db_local.users
-
-client = MongoClient(st.secrets['url_con'])
-db = client.football_data
-col_fotmob = db.fotmob_stats
-col_whoscored_calendar = db.whoscored_calendar
-col_whoscored_matches = db.whoscored_matches
 
 st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
 
@@ -46,6 +41,7 @@ else:
         pg_2 = st.navigation([
             st.Page('pages/home.py', title='Home'),
             st.Page('pages/poisson_preds.py', title='Poisson Preds'),
+            st.Page('pages/tables_preds.py', title='Tables Preds'),
             st.Page('pages/leagues_overview.py', title='League Overview'), 
             st.Page('pages/match_analysis.py', title='Match xG Stats'), 
             st.Page('pages/performance.py', title='Relative Performance'), 
