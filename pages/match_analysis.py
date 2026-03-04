@@ -19,7 +19,7 @@ if st.session_state['logged_in']:
     YEAR = 2026
     SEASONS = [f"{YEAR}", f"{YEAR-1}/{YEAR}"]
     
-    leagues = col.find({'general.country': {"$nin": cups}, 'general.league': {'$in': leagues}, 'general.season': {'$in': SEASONS}}).distinct('general.league')
+    leagues = col.find({'general.country': {"$nin": cups}, 'general.league': {'$in': leagues}, 'general.season': {'$in': SEASONS}, 'xg_coverage': True}).distinct('general.league')
     color_home = '#104DB0'
     color_away = '#B02D10'
     
