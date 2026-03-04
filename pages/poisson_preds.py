@@ -541,7 +541,7 @@ if st.session_state['logged_in']:
             try:
                 plot_venue_performances(df=df_league, home_team=home, away_team=away)
             except Exception:
-                st.image('./static/sorry.png')
+                st.image('../static/sorry.png')
     
         st.divider()
     
