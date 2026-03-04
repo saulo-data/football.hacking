@@ -12,6 +12,9 @@ from typing import Union
 
 st.set_page_config(page_title="Leagues Overview")
 
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+
 if st.session_state['logged_in']:
     collection = db.fotmob_stats
 
@@ -316,3 +319,6 @@ if st.session_state['logged_in']:
     get_team(season=leagues_data[league]['season'], country=leagues_data[league]['country'], league=leagues_data[league]['league'], teams=teams)
     
     st.caption("This App Was Developed by Saulo Faria - Data Scientist Specialized in Football (Soccer)")
+else:
+    st.warning("You must login to access this page.")
+    st.stop()
