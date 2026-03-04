@@ -371,27 +371,22 @@ if st.session_state['logged_in']:
         return sty
 
     stats = get_stats(year= YEAR)
-    df = stats_to_df(stats=stats)
+    df = stats_to_df(stats=stats)   
 
-    options = sorted(df["league"].dropna().astype(str).str.strip().unique().tolist())
+
+    valid = table_leagues_set()
+    options = sorted(
+        set(df["league"].dropna().astype(str).str.strip().unique().tolist()) & valid
+    )
 
     if not options:
         st.error("Sem ligas disponíveis.")
         st.stop()
 
-    key = "tables_preds__league"
-
-    
+    key = "tables_preds__league"    
     prev = st.session_state.get(key)
     if prev not in options:
         st.session_state[key] = options[0]
-
-
-    valid = table_leagues_set()
-
-    options = sorted(
-        set(df["league"].dropna().astype(str).str.strip().unique().tolist()) & valid
-    )
 
     st.title("Monte Carlo Season Forecast")
     st.info("These probabilities come from Monte Carlo simulations of the remaining fixtures.")
