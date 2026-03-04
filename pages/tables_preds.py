@@ -364,6 +364,43 @@ if st.session_state['logged_in']:
     with tab2:
         st.dataframe(styled_odds, use_container_width=True, height=height)
 
+    df_probs = (pos_df / 100.0).copy()
+    df_probs.columns = list(range(1, df_probs.shape[1] + 1))  # 1..N
+    
+    current_pos = (
+        current_points.set_index("team_name")
+        .loc[teams, "pos"]
+        .astype(int)
+    )
+    
+    metrics = table_metrics_from_df_probs(df_probs, current_positions=current_pos)
+    
+    st.divider()
+    
+    st.subheader("Monte Carlo Diagnostics")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Table Stability", f"{metrics['table_stability_index']:.3f}", border=True)
+    c2.metric("Avg Position Shift", f"{metrics['avg_position_shift']:.3f}", border=True)
+    c3.metric("Rank Volatility (SD)", f"{metrics['rank_volatility_sd']:.3f}", border=True)
+    c4.metric("Entropy (0–1)", f"{metrics['entropy_norm']:.3f}", border=True)
+    
+    st.info("""
+    **Monte Carlo Table Diagnostics**
+    
+    • **Table Stability** – Average probability that teams finish exactly in their current position. Higher values indicate a more stable table.
+    
+    • **Avg Position Shift** – Expected number of positions a team is likely to move from its current rank. Higher values suggest more movement in the table.
+    
+    • **Rank Volatility (SD)** – Standard deviation of the simulated final positions. It measures how uncertain each team's final ranking is.
+    
+    • **Entropy (0–1)** – Overall uncertainty of the position distribution. Values closer to 1 indicate a wider range of possible outcomes.
+    """)
+    
+    per_team_df = metrics["per_team"]
+    per_team_df = per_team_df.rename(columns={'current_pos': 'Current Pos', 'p_same_pos': 'Table Stability', 'eps_shift': 'Avg Pos Shift', 
+                                              'rank_sd': 'Rank Volatility', 'entropy_norm': 'Entropy', 'expected_pos': 'xPos'})
+    st.dataframe(per_team_df)
+    st.divider()
     st.markdown("""
     ### How the simulation works
 
