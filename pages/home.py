@@ -11,6 +11,6 @@ Instead of relying on subjective narratives, Football Hacking focuses on quantit
 
 From match outcome probabilities to full-season league simulations, the platform provides an analytical ecosystem built for professionals who value clarity, reproducibility, and statistical rigor.
 
-This is where football meets probability — and where informed decisions replace intuition.")
+This is where football meets probability — and where informed decisions replace intuition.""")
 
 st.write("***You can check the links in the sidebar if you’d like to explore more of my work. I’m available to answer any questions, provide additional information, and collaborate on projects whenever needed.***")
