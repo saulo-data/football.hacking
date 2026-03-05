@@ -444,7 +444,7 @@ if st.session_state['logged_in']:
     st.title('Poisson Probabilities')
     league = st.selectbox(label='Select a League:', options=sorted(df['league'].unique()), index=0)
     df_league = df[df['league'] == league]
-    df_league.rename(columns={'league': 'League', 'season': 'Season', 'home': 'Home Team', 'away': 'Away Team', 'weighted_performance_home': 'Weighted Perf Home', 
+    df_league = df_league.rename(columns={'league': 'League', 'season': 'Season', 'home': 'Home Team', 'away': 'Away Team', 'weighted_performance_home': 'Weighted Perf Home', 
                               'weighted_performance_away': 'Weighted Perf Away', 'score_home': 'Score Home', 'score_away': 'Score Away', 'goals_sum': 'Total Goals', 'result': 'Result', 'xg_coverage': 'xG Coverage'})
     
     st.dataframe(df_league.drop(columns=['home_image', 'away_image']), hide_index=True)
