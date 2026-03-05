@@ -42,7 +42,6 @@ if st.session_state['logged_in']:
                 "_id": 0,
                 "general": 1,
                 "teams": 1,
-                "stats": 1,
                 "score": 1,
                 "result": 1,
             }}
