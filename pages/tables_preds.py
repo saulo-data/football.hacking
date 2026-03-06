@@ -411,7 +411,10 @@ if st.session_state['logged_in']:
         st.session_state[key] = options[0]
 
     st.title("Monte Carlo Season Forecast")
-    st.info("These probabilities come from Monte Carlo simulations of the remaining fixtures.")
+    st.info("""These probabilities come from Monte Carlo simulations of the remaining fixtures.
+          **Table Forecast uses Monte Carlo simulations to project the final standings of a league.**
+            To maintain model reliability, this feature is currently available only for leagues with compatible competition structures. 
+            Our commitment is to deliver a genuinely well-crafted analytical service — prioritizing accuracy and methodological integrity rather than simply expanding volume to impress.""")
     st.markdown("""
     This table shows the **probability of each team finishing in every league position** based on Monte Carlo simulations of the remaining matches.
 
