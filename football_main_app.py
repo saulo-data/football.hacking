@@ -39,10 +39,6 @@ else:
             st.Page('pages/home.py', title='Home'),
             st.Page('pages/poisson_preds.py', title='Poisson Preds'),
             st.Page('pages/tables_preds.py', title='Tables Preds'),
-            st.Page('pages/leagues_overview.py', title='League Overview'), 
-            st.Page('pages/match_analysis.py', title='Match xG Stats'), 
-            st.Page('pages/performance.py', title='Relative Performance'), 
-            # st.Page('pages/xt_stats_app.py', title='Passes Metrics'),
             st.Page('pages/about.py', title='About Me')
         ], position='top')
     
