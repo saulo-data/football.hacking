@@ -77,6 +77,7 @@ with st.sidebar:
     st.write("Football Hacking is built on a simple principle: data should solve real problems. We analyze the game with depth, purpose, and curiosity, turning raw information into insights that matter. Instead of producing charts for the sake of it, we focus on answering meaningful questions that help coaches, analysts, and decision-makers act with clarity. Our work reflects a commitment to understanding football beyond the surface and to continuously learning from the game itself. Fell free to contact us: footbal.data@saulofaria.com.br")
 
     st.subheader("My Links")
+    st.link_button("Premium Dataset (82,000 matches)", "https://saulofaria0.gumroad.com/l/football-matches-dataset", width='stretch')
     st.link_button('Website', 'https://www.footballhacking.com', width='stretch')
     st.link_button('E-Book MplSoccer', 'subscribepage.io/mplsoccer', width='stretch')
     st.link_button('E-Book Aposta Consciente', "subscribepage.io/aposta-consciente", width='stretch')
