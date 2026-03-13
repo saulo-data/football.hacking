@@ -77,7 +77,8 @@ with st.sidebar:
     st.write("Football Hacking is built on a simple idea: football matches can be understood through probability. Our work focuses on forecasting match outcomes using statistical models such as Poisson distributions and Monte Carlo simulations. By transforming historical match data into probabilistic predictions, we aim to estimate the most likely results, evaluate market odds, and measure the robustness of betting opportunities. Rather than relying on narratives or intuition, the approach is strictly data-driven—using mathematics, simulation, and large historical datasets to understand how matches are likely to unfold. Contact: football.data@saulofaria.com.br")
 
     st.subheader("My Links")
-    st.link_button("Premium Dataset (82,000 matches)", "https://saulofaria0.gumroad.com/l/football-matches-dataset", width='stretch')
+    st.link_button("API", "https://rapidapi.com/saulo82faria/api/football-match-prediction-poisson-and-monte-carlo", width='stretch')
+    st.link_button("Premium Dataset (100,000 + matches)", "https://saulofaria0.gumroad.com/l/football-matches-dataset", width='stretch')
     st.link_button('Website', 'https://www.footballhacking.com', width='stretch')
     st.link_button('E-Book MplSoccer', 'subscribepage.io/mplsoccer', width='stretch')
     st.link_button('E-Book Aposta Consciente', "subscribepage.io/aposta-consciente", width='stretch')
