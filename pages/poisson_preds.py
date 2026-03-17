@@ -329,7 +329,7 @@ if st.session_state['logged_in']:
         home_teams = data[home_col].unique()
         away_teams = data[away_col].unique()
         all_teams = list(set(home_teams) | set(away_teams))
-        min_matches = len(all_teams) * 10
+        min_matches = len(all_teams) * 5
         return min_matches
 
     def style_df(df: pd.DataFrame) -> pd.DataFrame:
