@@ -4,6 +4,21 @@ from datetime import datetime
 from db_conn import db_local
 
 st.set_page_config(initial_sidebar_state="expanded", page_icon='static/image.png')
+st.markdown("""
+<div style="
+background-color:#0F5428;
+padding:16px;
+border-radius:8px;
+color:white;
+font-size:16px;
+text-align:center;
+margin-bottom:20px;
+">
+🚀 <b>Football Hacking is moving!</b><br>
+Soon this app will run exclusively at:<br>
+<b>https://app.footballhacking.com</b>
+</div>
+""", unsafe_allow_html=True)
 col_users = db_local.users
 
 if 'logged_in' not in st.session_state:
