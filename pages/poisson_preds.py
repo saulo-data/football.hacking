@@ -37,7 +37,7 @@ if st.session_state['logged_in']:
             {"$match": {
                 "general.league": {"$in": leagues},
                 "general.season": {"$in": SEASONS}, 
-                # "competition_type": "national league"
+                "competition_type": "national league"
             }},
             {"$project": {
                 "_id": 0,
