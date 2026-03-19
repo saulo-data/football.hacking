@@ -36,7 +36,8 @@ if st.session_state['logged_in']:
         stats = list(col.aggregate([
             {"$match": {
                 "general.league": {"$in": leagues},
-                "general.season": {"$in": SEASONS}
+                "general.season": {"$in": SEASONS}, 
+                "competition_type": "national league"
             }},
             {"$project": {
                 "_id": 0,
