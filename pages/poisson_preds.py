@@ -29,7 +29,7 @@ if st.session_state['logged_in']:
     if st.session_state['user']['plan'] == 'free':
         leagues = ['LaLiga']
     else:
-        leagues = col.distinct('general.league')
+        leagues = col.find({"competition_type": "national league"}).distinct('general.league')
 
     @st.cache_data(show_spinner=False, ttl='12h')
     def get_stats(year: int, leagues: list) -> dict:
@@ -37,7 +37,6 @@ if st.session_state['logged_in']:
             {"$match": {
                 "general.league": {"$in": leagues},
                 "general.season": {"$in": SEASONS}, 
-                "competition_type": "national league"
             }},
             {"$project": {
                 "_id": 0,
